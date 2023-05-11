@@ -155,11 +155,12 @@ numeroContactoEmergencia celular NULL,
 CONSTRAINT PK_Cliente PRIMARY KEY (idCliente),
 CONSTRAINT UQ_NumeroCedulaC UNIQUE (numeroCedula),
 CONSTRAINT CK_FechaNacimientoC CHECK(FechaNacimiento<GETDATE()),
-CONSTRAINT UQ_CorreoElectronicoC UNIQUE (correoElectronico),
+CONSTRAINT UQ_CorreoElectronicoC UNIQUE (correoElectronico) ,
 CONSTRAINT UQ_NumeroCelularC UNIQUE (numeroCelular),
 CONSTRAINT CK_nombres CHECK (PATINDEX('%[0-9]%', nombres) = 0),
 CONSTRAINT CK_apellidos CHECK (PATINDEX('%[0-9]%', apellidos) = 0)
 );
+
 
 --Creación de la tabla Entrenador.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
@@ -463,9 +464,11 @@ idEntrenador TINYINT NOT NULL,
 idPersonalSalud TINYINT NOT NULL,
 descripcionIncidente NVARCHAR (200) NOT NULL,
 fechaIncidente DATE DEFAULT GETDATE(),
-CONSTRAINT PK_
-
-
+CONSTRAINT PK_ReporteIncidente PRIMARY KEY (idReporteIncidente),
+CONSTRAINT FK_ClienteRepor FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente),
+CONSTRAINT FK_EntrenadorRepor FOREIGN KEY (idEntrenador) REFERENCES Entrenador (idEntrenador),
+CONSTRAINT FK_PersonalSaludRepor FOREIGN KEY (idPersonalSalud) REFERENCES PersonalSalud (idPersonalSalud),
+CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
 );
 
 /*
