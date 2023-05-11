@@ -3,7 +3,7 @@
 /*
 El siguiente script fue desarrollado por: David Trujillo, Sebastián Andrade y Jose Miguel Merlo
 Fecha de creacion: 08-05-2023 
-Última versión: 19-04-2023 
+Última versión: 11-05-2023 
 
 **********************************
 -- Verificacion de existencia de la base de datos y creacion de la misma
@@ -204,8 +204,8 @@ END
 CREATE TABLE PlanEntrenamiento(
 idPlanEntrenamiento SMALLINT IDENTITY (1,1),
 idCliente SMALLINT NOT NULL,
-nombre VARCHAR(20) NOT NULL,
 idEntrenador TINYINT NOT NULL,
+nombre VARCHAR(20) NOT NULL,
 intensidad VARCHAR(5) NOT NULL,
 objetivoPlan NVARCHAR(40) NOT NULL,
 fechaInicio DATE NOT NULL,
@@ -301,6 +301,7 @@ idCita SMALLINT IDENTITY (1,1),
 idPersonalSalud TINYINT NOT  NULL,
 idEntrenador TINYINT NULL,
 idCliente SMALLINT NULL,
+nombre VARCHAR (20) NOT NULL,
 fechaCita SMALLDATETIME NOT NULL,
 tipo NVARCHAR(15) NOT NULL,
 descripcion NVARCHAR (25) NULL,
@@ -312,7 +313,8 @@ CONSTRAINT FK_EntrenadorC FOREIGN KEY (idEntrenador) REFERENCES Entrenador (idEn
 CONSTRAINT FK_ClienteC FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente),
 CONSTRAINT CK_fechaCita CHECK (fechaCita>=GETDATE()),
 CONSTRAINT CK_fechaAsistencia CHECK (fechaAsistencia>=GETDATE()),
-CONSTRAINT CK_tipoC CHECK (tipo IN ('Cita médica', 'Cita nutricionista'))
+CONSTRAINT CK_tipoC CHECK (tipo IN ('Cita médica', 'Cita nutricionista')),
+CONSTRAINT UQ_nombre UNIQUE (nombre)
 );
 
 --Creación de la tabla RegistroMedico.
@@ -323,7 +325,6 @@ BEGIN
 END
 CREATE TABLE RegistroMedico(
 idRegistroMedico SMALLINT IDENTITY (1,1),
-idPersonalSalud TINYINT NOT NULL,
 idCita SMALLINT NOT NULL,
 fechaRegistro DATE NOT NULL DEFAULT GETDATE(),
 tipoSangre VARCHAR(3) NOT NULL,
@@ -338,7 +339,6 @@ operaciones NVARCHAR(120) NULL,
 alergias NVARCHAR(100) NULL,
 objetivoCliente NVARCHAR(150) NOT NULL,
 CONSTRAINT PK_RegistroMedico PRIMARY KEY (idRegistroMedico),
-CONSTRAINT FK_PersonalSaludR FOREIGN KEY (idPersonalSalud) REFERENCES PersonalSalud (idPersonalSalud),
 CONSTRAINT FK_Cita FOREIGN KEY (idCita) REFERENCES Cita (idCita),
 CONSTRAINT CK_FechaRegistro CHECK (fechaRegistro=GETDATE()),
 CONSTRAINT CK_TipoSangre CHECK (tipoSangre IN ('O+','O-','A+','A-','B+','B-','AB+','AB-')),
@@ -477,3 +477,294 @@ CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
 **********************************
 */
 
+/*
+**********************************
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Plan Entrenamiento
+**********************************
+*/
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoPlanEntrenamiento')
+BEGIN
+    DROP PROCEDURE ingresoPlanEntrenamiento
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla PlanEntrenamiento, 
+--a través de la cédula del paciente, y el nombre del examen. 
+CREATE PROCEDURE ingresoPlanEntrenamiento
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+    @nombre VARCHAR(20),
+    @intensidad VARCHAR(5),
+    @objetivoPlan NVARCHAR(40),
+    @fechaInicio DATE,
+    @fechaCambio DATE,
+    @monitoreo CHAR (7),
+	@numeroCedulaC cedulaIdentidad,
+	@numeroCedulaE cedulaIdentidad
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
+    BEGIN
+        RAISERROR('El cliente no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+        --Se verifica si existe el entrenador con esa cédula que se está intentando ingresar. 
+        IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+        BEGIN
+            RAISERROR('El entrenador no existe.',16,10)
+        END
+        ELSE
+        BEGIN
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del examen. 
+            DECLARE @idCliente SMALLINT
+            DECLARE @idEntrenador TINYINT
+
+ 
+
+            SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
+            SET @idEntrenador = (SELECT idEntrenador FROM Entrenador WHERE numeroCedula = @numeroCedulaE);
+
+            --Se realiza la inserción de la tupla en la tabla Resultado.
+            INSERT INTO PlanEntrenamiento(idCliente,idEntrenador,nombre,intensidad,objetivoPlan,fechaInicio,fechaCambio) 
+            VALUES(@idCliente,@idEntrenador,@nombre,@intensidad,@objetivoPlan,@fechaInicio,@fechaCambio)
+        END
+    END
+GO
+
+
+/*
+**********************************
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Rutina
+**********************************
+*/
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoRutina')
+BEGIN
+    DROP PROCEDURE ingresoRutina
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Rutina, 
+--a través del nombre del plan de entrenamiento. 
+CREATE PROCEDURE ingresoRutina
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+    @nombreEjercicio NVARCHAR(30),
+	@descripcionEjercicio NVARCHAR(120) ,
+	@grupoMuscular NVARCHAR(20) ,
+	@cantidadRepeticiones TINYINT ,
+	@tiempoDescanso DECIMAL (3,1),
+	@cantidadSeries TINYINT ,
+	@diaSemana VARCHAR(9),
+	@caloriasQuemadas DECIMAL (5,1) ,
+	@asistencia BIT,
+	@nombre VARCHAR (20)
+AS
+    --Se verifica si existe el plan de entrenamiento con el nombre que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM PlanEntrenamiento WHERE nombre = @nombre) = 0
+    BEGIN
+        RAISERROR('El plan de entrenamiento no existe.',16,10)
+    END
+    ELSE
+        
+        BEGIN
+            --Si el plan de entrenamient existe, se obtiene el id del plan de entrenamiento. 
+            DECLARE @idPlanEntrenamiento SMALLINT
+ 
+            SET @idPlanEntrenamiento = (SELECT idPlanEntrenamiento FROM PlanEntrenamiento WHERE nombre = @nombre);
+
+            --Se realiza la inserción de la tupla en la tabla Resultado.
+            INSERT INTO Rutina(idPlanEntrenamiento, nombreEjercicio, descripcionEjercicio, grupoMuscular, cantidadRepeticiones, 
+								tiempoDescanso, cantidadSeries,diaSemana,caloriasQuemadas,asistencia) 
+            VALUES(@idPlanEntrenamiento,@nombreEjercicio,@descripcionEjercicio,@grupoMuscular,@cantidadRepeticiones,
+					@tiempoDescanso,@cantidadSeries,@diaSemana,@caloriasQuemadas,@asistencia)
+        END
+    
+GO
+
+
+/*
+**********************************
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Cita
+**********************************
+*/
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaCliente')
+BEGIN
+    DROP PROCEDURE ingresoCitaCliente
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE ingresoCitaCliente
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+    @nombre VARCHAR (20),
+	@fechaCita SMALLDATETIME,
+	@tipo NVARCHAR(15),
+	@descripcion NVARCHAR (25),
+	@asistencia BIT,
+	@fechaAsistencia SMALLDATETIME,
+	@numeroCedulaC cedulaIdentidad,
+	@numeroCedulaP cedulaIdentidad
+
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
+    BEGIN
+        RAISERROR('El cliente no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+        --Se verifica si existe el personal de salud con esa cédula que se está intentando ingresar. 
+        IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+        BEGIN
+            RAISERROR('El personal de salud no existe.',16,10)
+        END
+        ELSE
+        BEGIN
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud. 
+            DECLARE @idCliente SMALLINT
+            DECLARE @idPersonalSalud TINYINT
+
+ 
+
+            SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
+            SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+
+            --Se realiza la inserción de la tupla en la tabla Cita.
+            INSERT INTO Cita(idPersonalSalud,idCliente,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia) 
+            VALUES(@idPersonalSalud,@idCliente,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+        END
+    END
+GO
+
+/*
+**********************************
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Cita
+**********************************
+*/
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaEntrenador')
+BEGIN
+    DROP PROCEDURE ingresoCitaEntrenador
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE ingresoCitaEntrenador
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+    @nombre VARCHAR (20),
+	@fechaCita SMALLDATETIME,
+	@tipo NVARCHAR(15),
+	@descripcion NVARCHAR (25),
+	@asistencia BIT,
+	@fechaAsistencia SMALLDATETIME,
+	@numeroCedulaE cedulaIdentidad,
+	@numeroCedulaP cedulaIdentidad
+
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+    BEGIN
+        RAISERROR('El entrenador no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+        --Se verifica si existe el personal de salud con esa cédula que se está intentando ingresar. 
+        IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+        BEGIN
+            RAISERROR('El personal de salud no existe.',16,10)
+        END
+        ELSE
+        BEGIN
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud. 
+            DECLARE @idEntrenador SMALLINT
+            DECLARE @idPersonalSalud TINYINT
+
+ 
+
+            SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
+            SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+
+            --Se realiza la inserción de la tupla en la tabla Cita.
+            INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia) 
+            VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+        END
+    END
+GO
+
+
+CREATE TABLE RegistroMedico(
+idRegistroMedico SMALLINT IDENTITY (1,1),
+idCita SMALLINT NOT NULL,
+fechaRegistro DATE NOT NULL DEFAULT GETDATE(),
+tipoSangre VARCHAR(3) NOT NULL,
+estadoSalud NVARCHAR(10) NOT NULL,
+pesoActual DECIMAL(5,2) NOT NULL,
+alturaActual DECIMAL(3,2) NOT NULL,
+indiceGrasaCorporal DECIMAL (3,1) NOT NULL,
+lesiones NVARCHAR(120) NULL,
+enfermedades NVARCHAR (180) NULL,
+somatipo VARCHAR(10) NOT NULL,
+operaciones NVARCHAR(120) NULL,
+alergias NVARCHAR(100) NULL,
+objetivoCliente NVARCHAR(150) NOT NULL,
+);
+
+/*
+**********************************
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Registro Médico
+**********************************
+*/
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaEntrenador')
+BEGIN
+    DROP PROCEDURE ingresoCitaEntrenador
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE ingresoCitaEntrenador
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+    @nombre VARCHAR (20),
+	@fechaCita SMALLDATETIME,
+	@tipo NVARCHAR(15),
+	@descripcion NVARCHAR (25),
+	@asistencia BIT,
+	@fechaAsistencia SMALLDATETIME,
+	@numeroCedulaE cedulaIdentidad,
+	@numeroCedulaP cedulaIdentidad
+
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+    BEGIN
+        RAISERROR('El entrenador no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+        --Se verifica si existe el personal de salud con esa cédula que se está intentando ingresar. 
+        IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+        BEGIN
+            RAISERROR('El personal de salud no existe.',16,10)
+        END
+        ELSE
+        BEGIN
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud. 
+            DECLARE @idEntrenador SMALLINT
+            DECLARE @idPersonalSalud TINYINT
+
+ 
+
+            SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
+            SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+
+            --Se realiza la inserción de la tupla en la tabla Cita.
+            INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia) 
+            VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+        END
+    END
+GO
