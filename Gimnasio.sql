@@ -1,15 +1,15 @@
---Esto es una prueba
+Ôªø--Esto es una prueba
 
 /*
-El siguiente script fue desarrollado por: David Trujillo, Sebasti·n Andrade y Jose Miguel Merlo
+El siguiente script fue desarrollado por: David Trujillo, Sebasti√°n Andrade y Jose Miguel Merlo
 Fecha de creacion: 08-05-2023 
-⁄ltima versiÛn: 11-05-2023 
+√öltima versi√≥n: 11-05-2023 
 
 **********************************
 -- Verificacion de existencia de la base de datos y creacion de la misma
 **********************************
 */
--- Usar master para creaciÛn de base.
+-- Usar master para creaci√≥n de base.
 USE Master
 GO
 
@@ -32,7 +32,7 @@ GO
 USE Gimnasio
 GO
 
--- Validar si existe el tipo de dato correo y crear tipo de dato para correo electrÛnico
+-- Validar si existe el tipo de dato correo y crear tipo de dato para correo electr√≥nico
 IF EXISTS(SELECT name FROM sys.systypes WHERE name = 'correo')
 BEGIN
     DROP TYPE correo;
@@ -66,7 +66,7 @@ BEGIN
 END
 GO
 
--- CreaciÛn de la regla que valide que el tipo de dato cedulaIdentidad siga los par·metros de una cÈdula de identidad Ecuatoriana
+-- Creaci√≥n de la regla que valide que el tipo de dato cedulaIdentidad siga los par√°metros de una c√©dula de identidad Ecuatoriana
 CREATE RULE cedulaIdentidad_rule AS @value LIKE '[2][0-4][0-5][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
     OR @value LIKE '[1][0-9][0-5][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
     OR @value LIKE '[0][1-9][0-5][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
@@ -91,7 +91,7 @@ BEGIN
 END
 GO
 
--- CreaciÛn de la regla que valide que el tipo de dato correo siga los par·metros requeridos por un email.
+-- Creaci√≥n de la regla que valide que el tipo de dato correo siga los par√°metros requeridos por un email.
 CREATE RULE correo_rule
 AS
     @Correo LIKE '%@%' AND
@@ -119,7 +119,7 @@ BEGIN
 END
 GO
 
--- CreaciÛn de la regla que valide que el tipo de dato celular siga los par·metros de un celular ecuatoriano
+-- Creaci√≥n de la regla que valide que el tipo de dato celular siga los par√°metros de un celular ecuatoriano
 CREATE RULE celular_rule AS @value LIKE '[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
    
 GO
@@ -135,7 +135,7 @@ GO
 USE Gimnasio
 GO
 
---CreaciÛn de la tabla Cliente.
+--Creaci√≥n de la tabla Cliente.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Cliente')
 BEGIN
@@ -157,12 +157,12 @@ CONSTRAINT UQ_NumeroCedulaC UNIQUE (numeroCedula),
 CONSTRAINT CK_FechaNacimientoC CHECK(FechaNacimiento<GETDATE()),
 CONSTRAINT UQ_CorreoElectronicoC UNIQUE (correoElectronico) ,
 CONSTRAINT UQ_NumeroCelularC UNIQUE (numeroCelular),
-CONSTRAINT CK_nombres CHECK (PATINDEX('%[0-9]%', nombres)†=†0),
-CONSTRAINT CK_apellidos CHECK (PATINDEX('%[0-9]%', apellidos)†=†0)
+CONSTRAINT CK_nombres CHECK (PATINDEX('%[0-9]%', nombres)¬†=¬†0),
+CONSTRAINT CK_apellidos CHECK (PATINDEX('%[0-9]%', apellidos)¬†=¬†0)
 );
 
 
---CreaciÛn de la tabla Entrenador.
+--Creaci√≥n de la tabla Entrenador.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Entrenador')
 BEGIN
@@ -191,11 +191,11 @@ CONSTRAINT UQ_CorreoElectronicoE UNIQUE (correoElectronico),
 CONSTRAINT UQ_NumeroCelularE UNIQUE (numeroCelular),
 CONSTRAINT CK_AniosExperiencia CHECK(AniosExperiencia>=0 AND AniosExperiencia<=30),
 CONSTRAINT CK_fechaSalida CHECK (fechaSalida>=fechaIngreso),
-CONSTRAINT CK_nombresE CHECK (PATINDEX('%[0-9]%', nombres)†=†0),
-CONSTRAINT CK_apellidosE CHECK (PATINDEX('%[0-9]%', apellidos)†=†0)
+CONSTRAINT CK_nombresE CHECK (PATINDEX('%[0-9]%', nombres)¬†=¬†0),
+CONSTRAINT CK_apellidosE CHECK (PATINDEX('%[0-9]%', apellidos)¬†=¬†0)
 );
 
---CreaciÛn de la tabla Plan Entrenamiento.
+--Creaci√≥n de la tabla Plan Entrenamiento.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'PlanEntrenamiento')
 BEGIN
@@ -219,10 +219,10 @@ CONSTRAINT CK_FechaInicio CHECK (fechaInicio>=GETDATE()),
 CONSTRAINT CK_FechaCambio CHECK (fechaCambio>fechaInicio),
 CONSTRAINT CK_Monitoreo CHECK (monitoreo IN ('Semanal','Mensual')),
 CONSTRAINT UQ_NombreP UNIQUE (nombre),
-CONSTRAINT CK_nombre CHECK (PATINDEX('%[0-9]%', nombre)†=†0)
+CONSTRAINT CK_nombre CHECK (PATINDEX('%[0-9]%', nombre)¬†=¬†0)
 );
 
---CreaciÛn de la tabla Rutina.
+--Creaci√≥n de la tabla Rutina.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Rutina')
 BEGIN
@@ -248,10 +248,10 @@ CONSTRAINT CK_TiempoDescanso CHECK (tiempoDescanso>10),
 CONSTRAINT CK_CantidadSeries CHECK (cantidadSeries>0 AND cantidadSeries<=8),
 CONSTRAINT CK_DiaSemana CHECK (diaSemana IN ('Lunes', 'Martes','Miercoles', 'Jueves', 'Viernes', 'Sabado')),
 CONSTRAINT CK_caloriasQuemadas CHECK (caloriasQuemadas>0),
-CONSTRAINT CK_nombreEjercicio CHECK (PATINDEX('%[0-9]%', nombreEjercicio)†=†0)
+CONSTRAINT CK_nombreEjercicio CHECK (PATINDEX('%[0-9]%', nombreEjercicio)¬†=¬†0)
 );
 
---CreaciÛn de la tabla PersonalSalud.
+--Creaci√≥n de la tabla PersonalSalud.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'PersonalSalud')
 BEGIN
@@ -285,12 +285,12 @@ CONSTRAINT UQ_NumeroCelularP UNIQUE (numeroCelular),
 CONSTRAINT CK_AniosExperienciaP CHECK (aniosExperiencia>=0),
 CONSTRAINT CK_Tipo CHECK(tipo IN ('Nutricionista','Doctor')),
 CONSTRAINT CK_TipoContrato CHECK(tipoContrato IN ('Tiempo Completo','Medio Tiempo','Ocasional')),
-CONSTRAINT CK_nombresP CHECK (PATINDEX('%[0-9]%', nombres)†=†0),
-CONSTRAINT CK_apellidosP CHECK (PATINDEX('%[0-9]%', apellidos)†=†0),
-CONSTRAINT CK_especialidad CHECK (PATINDEX('%[0-9]%', especialidad)†=†0)
+CONSTRAINT CK_nombresP CHECK (PATINDEX('%[0-9]%', nombres)¬†=¬†0),
+CONSTRAINT CK_apellidosP CHECK (PATINDEX('%[0-9]%', apellidos)¬†=¬†0),
+CONSTRAINT CK_especialidad CHECK (PATINDEX('%[0-9]%', especialidad)¬†=¬†0)
 );
 
---CreaciÛn de la tabla Cita.
+--Creaci√≥n de la tabla Cita.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Cita')
 BEGIN
@@ -313,11 +313,11 @@ CONSTRAINT FK_EntrenadorC FOREIGN KEY (idEntrenador) REFERENCES Entrenador (idEn
 CONSTRAINT FK_ClienteC FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente),
 CONSTRAINT CK_fechaCita CHECK (fechaCita>=GETDATE()),
 CONSTRAINT CK_fechaAsistencia CHECK (fechaAsistencia>=GETDATE()),
-CONSTRAINT CK_tipoC CHECK (tipo IN ('Cita mÈdica', 'Cita nutricionista')),
+CONSTRAINT CK_tipoC CHECK (tipo IN ('Cita m√©dica', 'Cita nutricionista')),
 CONSTRAINT UQ_nombre UNIQUE (nombre)
 );
 
---CreaciÛn de la tabla RegistroMedico.
+--Creaci√≥n de la tabla RegistroMedico.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'RegistroMedico')
 BEGIN
@@ -342,16 +342,16 @@ CONSTRAINT PK_RegistroMedico PRIMARY KEY (idRegistroMedico),
 CONSTRAINT FK_Cita FOREIGN KEY (idCita) REFERENCES Cita (idCita),
 CONSTRAINT CK_FechaRegistro CHECK (fechaRegistro=GETDATE()),
 CONSTRAINT CK_TipoSangre CHECK (tipoSangre IN ('O+','O-','A+','A-','B+','B-','AB+','AB-')),
-CONSTRAINT CK_EstadoSalud CHECK (estadoSalud IN ('Excelente','Bueno','CrÌtico')),
+CONSTRAINT CK_EstadoSalud CHECK (estadoSalud IN ('Excelente','Bueno','Cr√≠tico')),
 CONSTRAINT CK_PesoActual CHECK(pesoActual>0 AND pesoActual<400),
 CONSTRAINT CK_alturaActual CHECK (alturaActual>0 AND alturaActual<2.5),
 CONSTRAINT CK_indiceGrasaCorporal CHECK (indiceGrasaCorporal>0 AND indiceGrasaCorporal <60),
 CONSTRAINT CK_Somatipo CHECK (somatipo IN ('Hectomorfo','Mesomorfo','Endomorfo')),
-CONSTRAINT CK_operaciones CHECK (PATINDEX('%[0-9]%', operaciones)†=†0),
-CONSTRAINT CK_alergias CHECK (PATINDEX('%[0-9]%', alergias)†=†0)
+CONSTRAINT CK_operaciones CHECK (PATINDEX('%[0-9]%', operaciones)¬†=¬†0),
+CONSTRAINT CK_alergias CHECK (PATINDEX('%[0-9]%', alergias)¬†=¬†0)
 );
 
---CreaciÛn de la tabla PlanNutricional.
+--Creaci√≥n de la tabla PlanNutricional.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'PlanNutricional')
 BEGIN
@@ -370,10 +370,10 @@ CONSTRAINT FK_RegistroMedico FOREIGN KEY (idRegistroMedico) REFERENCES RegistroM
 CONSTRAINT CK_cantidadComidasDia CHECK (cantidadComidasDia>0 AND cantidadComidasDia <=5),
 CONSTRAINT CK_fechaInicioP CHECK (fechaInicio>=GETDATE()),
 CONSTRAINT CK_fechaFinP CHECK (fechaFin>FechaInicio),
-CONSTRAINT CK_alergiasConsideradas CHECK (PATINDEX('%[0-9]%', alergiasConsideradas)†=†0)
+CONSTRAINT CK_alergiasConsideradas CHECK (PATINDEX('%[0-9]%', alergiasConsideradas)¬†=¬†0)
 );
 
---CreaciÛn de la tabla Comida.
+--Creaci√≥n de la tabla Comida.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Comida')
 BEGIN
@@ -393,7 +393,7 @@ CONSTRAINT CK_CantidadGrasas CHECK (cantidadGrasas>0 AND cantidadGrasas<=9999),
 CONSTRAINT CK_CantidadFibra CHECK (cantidadFibra>0 AND cantidadFibra<=9999),
 );
 
---CreaciÛn de la tabla Menu.
+--Creaci√≥n de la tabla Menu.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Menu')
 BEGIN
@@ -413,7 +413,7 @@ CONSTRAINT CK_CantidadTotalCalorias CHECK (cantidadTotalCalorias>0 AND cantidadT
 CONSTRAINT CK_horarioMenu CHECK (horarioMenu IN ('Dia','Medio dia','Tarde','Media tarde','Noche'))
 );
 
---CreaciÛn de la tabla Ingrediente.
+--Creaci√≥n de la tabla Ingrediente.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'Ingrediente')
 BEGIN
@@ -434,10 +434,10 @@ CONSTRAINT CK_Grasas CHECK (grasas>0 AND grasas<=999),
 CONSTRAINT CK_Carbohidratos CHECK (carbohidratos>0 AND carbohidratos<=999),
 CONSTRAINT CK_Fibra CHECK (fibra>0 AND fibra<=999),
 CONSTRAINT UQ_Nombre UNIQUE(nombre),
-CONSTRAINT CK_nombreI CHECK (PATINDEX('%[0-9]%', nombre)†=†0)
+CONSTRAINT CK_nombreI CHECK (PATINDEX('%[0-9]%', nombre)¬†=¬†0)
 );
 
---CreaciÛn de la tabla IngredienteComida.
+--Creaci√≥n de la tabla IngredienteComida.
 --Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
 IF EXISTS(SELECT name FROM sys.tables WHERE name = 'IngredienteComida')
 BEGIN
@@ -473,6 +473,225 @@ CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
 
 /*
 **********************************
+-- INSERTS
+**********************************
+*/
+--Insert Tabla Cliente
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Juan', 'Perez', '1104491862', '1990-05-01', 'Calle 123', 'juanperez@email.com', '0987654321', '0976543210');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Maria', 'Gonzalez', '1758326503', '1985-12-10', 'Avenida Principal', 'mariagonzalez@email.com', '0923456789', '0987654321');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Pedro', 'Lopez', '0923081847', '1992-08-15', 'Calle Secundaria', 'pedrolopez@email.com', '0987123456', '0921654987');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Ana', 'Martinez', '0911276548', '1988-03-22', 'Avenida Central', 'anamartinez@email.com', '0964321987', '0954987321');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Luis', 'Rodriguez', '1705682925', '1995-07-05', 'Calle Principal', 'luisrodriguez@email.com', '0921654987', '0989654123');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Laura', 'Sanchez', '1301167859', '1991-11-30', 'Avenida Secundaria', 'laurasanchez@email.com', '0954987321', '0923987456');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Carlos', 'Gomez', '1721694285', '1994-04-12', 'Calle 456', 'carlosgomez@email.com', '0921987654', '0987123654');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Sofia', 'Lopez', '1705862756', '1987-09-18', 'Avenida 789', 'sofialopez@email.com', '0954123987', '0921789654');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Diego', 'Hernandez', '1741643297', '1993-02-25', 'Calle 890', 'diegohernandez@email.com', '0989654321', '0956123789');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Carolina', 'Torres', '0400609954', '1996-06-08', 'Avenida 567', 'carolinatorres@email.com', '0987321654', '0921789123');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Andres', 'Silva', '0412864712', '1990-03-15', 'Calle 901', 'andressilva@email.com', '0923789456', '0954321988');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Valeria', 'Lopez', '1708071024', '1989-07-20', 'Avenida 234', 'valerialopez@email.com', '0989456123', '0987654321');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Manuel', 'Garcia', '0913876254', '1994-04-05', 'Calle 567', 'manuelgarcia@email.com', '0956123789', '0921987654');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Camila', 'Rojas', '1209567834', '1991-10-12', 'Avenida 890', 'camilarojas@email.com', '0989654123', '0954987321');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Daniel', 'Vargas', '1203567890', '1987-05-27', 'Calle 123', 'danielvargas@email.com', '0921987654', '0987123456');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Valentina', 'Soto', '1754446720', '1993-01-03', 'Avenida Principal', 'valentinasoto@email.com', '0954321987', '0981654987');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Julio', 'Lopez', '1303753618', '1990-06-18', 'Calle 456', 'juliolopez@email.com', '0991654987', '0987321654');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Marina', 'Gomez', '1103756134', '1988-02-13', 'Avenida Secundaria', 'marinagomez@email.com', '0987123654', '0954987123');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Roberto', 'Herrera', '1305267542', '1995-09-28', 'Calle 789', 'robertoherrera@email.com', '0954987321', '0971654987');
+INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
+VALUES ('Eduardo', 'Morales', '1200984761', '1987-11-11', 'Calle 901', 'eduardomorales@email.com', '0994321987', '0984987321');
+
+--Insert Tabla Entrenador
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Juan', 'P√©rez', '1101234567', '1990-05-01', 'Av. Amazonas y Naciones Unidas', 'juan.perez@gmail.com', '0991234567', 5, '2020-06-01', '0995672889');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Mar√≠a', 'Garc√≠a', '1102345678', '1995-07-15', 'Av. 6 de Diciembre y Eloy Alfaro', 'maria.garcia@hotmail.com', '0982345678', 3, '2021-02-15', '0987654321');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Pedro', 'Velasco', '1103456789', '1988-11-30', 'Calle 18 de Septiembre y Av. Quito', 'pedro.velasco@yahoo.com', '0963456789', 10, '2019-05-10', '0954321098');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Ana', 'S√°nchez', '1104567890', '1992-03-20', 'Av. 10 de Agosto y Av. Col√≥n', 'ana.sanchez@gmail.com', '0994567890', 2, '2022-01-01', '0967890123');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Luis', 'G√≥mez', '1105678901', '1985-09-10', 'Calle Garc√≠a Moreno y Av. Bolivar', 'luis.gomez@hotmail.com', '0985678901', 15, '2018-11-20', '0976543210');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Carla', 'Mart√≠nez', '1106789012', '1998-01-05', 'Av. 9 de Octubre y Av. Malec√≥n', 'carla.martinez@yahoo.com', '0966789012', 1, '2023-04-01', '0987654321');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Jorge', 'Herrera', '1107890123', '1991-06-25', 'Calle Olmedo y Av. 24 de Mayo', 'jorge.herrera@gmail.com', '0997890123', 4, '2020-08-15', '0998716545');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Fernanda', 'Castillo', '1108901234', '1987-12-15', 'Av. 12 de Octubre y Av. Patria', 'fernanda.castillo@hotmail.com', '0988901234', 12, '2019-02-10', '0995599166');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Diego', 'Vega', '1109012345', '1994-08-05', 'Calle Sucre y Av. Rocafuerte', 'diego.ga@yahoo.com', '0969012345', 2, '2022-03-01', '0961523478');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Sof√≠a', 'Paz', '1100123456', '1997-02-28', 'Av. 6 de Diciembre y Av. Naciones Unidas', 'sofia.paz@gmail.com', '0990123456', 1, '2023-01-01', '0956241873');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Andr√©s', 'Moreno', '1101234567', '1990-05-01', 'Av. Amazonas y Naciones Unidas', 'andres.moreno@hotmail.com', '0981234567', 6, '2019-12-01', '0998765432');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Valeria', 'Guzm√°n', '1102345678', '1995-07-15', 'Av. 6 de Diciembre y Eloy Alfaro', 'valeria.guzman@yahoo.com', '0962345678', 4, '2021-05-01', '0983715522');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Gabriel', 'Ruiz', '1103456789', '1988-11-30', 'Calle 18 de Septiembre y Av. Quito', 'gabriel.ruiz@gmail.com', '0993456789', 11, '2018-06-10', '0987544896');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Luc√≠a', 'Santos', '1104567890', '1992-03-20', 'Av. 10 de Agosto y Av. Col√≥n', 'lucia.santos@hotmail.com', '0984567890', 3, '2022-02-01', '0987544896');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Mario', 'Gallardo', '1105678901', '1985-09-10', 'Calle Garc√≠a Moreno y Av. Bolivar', 'mario.gallardo@yahoo.com', '0965678901', 16, '2017-10-20', '0999888754');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Laura', 'Mendoza', '1106789012', '1998-01-05', 'Av. 9 de Octubre y Av. Malec√≥n', 'laura.mendoza@gmail.com', '0996789012', 2, '2023-02-01', '0989622101');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Carlos', 'Paredes', '1107890123', '1991-06-25', 'Calle Olmedo y Av. 24 de Mayo', 'carlos.paredes@hotmail.com', '0987890123', 5, '2020-10-15', '0989622101');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Paola', 'Vera', '1108901234', '1987-12-15', 'Av. 12 de Octubre y Av. Patria', 'paola.vera@yahoo.com', '0968901234', 13, '2019-01-01', '0991234567');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Andrea', 'G√°ngora', '1109012345', '1994-08-05', 'Calle Sucre y Av. Rocafuerte', 'andrea.gongora@gmail.com', '0999012345', 3, '2022-04-01', '0987654321');
+INSERT INTO Entrenador (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, aniosExperiencia, fechaIngreso, fechaSalida)
+VALUES ('Javier', 'Cruz', '1100123456', '1997-02-28', 'Av. 6 de Diciembre y Av. Naciones Unidas', 'javier.cruz@hotmail.com', '0980123456', 2, '2023-03-01', '0998765432');
+
+
+--Insert Tabla Personal Salud
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Juan', 'P√©rez', '1104567890', '1990-05-11', 'juanperez@gmail.com', '0987654321', 'Av. Amazonas y Naciones Unidas', 5, 'Doctor', 'Cardiolog√≠a', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Mar√≠a', 'Garc√≠a', '1104567891', '1985-02-15', 'mariagarc@gmail.com', '0998765432', 'Av. 6 de Diciembre y Eloy Alfaro', 8, 'Doctor', 'Internista', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Luis', 'G√≥mez', '1104567892', '1982-11-20', 'luisgomez@gmail.com', '0976543210', 'Calle 18 de Septiembre y Av. Quito', 12, 'Doctor', 'General', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Ana', 'Mart√≠nez', '1104567893', '1995-07-03', 'anamartinez@gmail', '0987654321', 'Av. Am√©rica y Naciones Unidas', 3, 'Nutricionista', 'Nutrici√≥n Deportiva', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Pedro', 'S√°nchez', '1104567894', '1988-12-30', 'pedrosanchez@gmail.com', '0998765432', 'Calle 10 de Agosto y Av. 9 de Octubre', 6, 'Doctor', 'Traumatolog√≠a', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Carla', 'L√≥pez', '1104567895', '1992--25', 'carlalopez@gmail.com', '0976543210', 'Av. 12 de Octubre y Av. Patria', 4, 'Nutricionista', 'Nutrici√≥n Cl√≠nica', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Jorge', 'Hern√°ndez', '1104567896', '1980-09-10', 'jorgehernandez@gmail.com', '0987654321', 'Calle Guayaquil y Av. Quito', 15, 'Doctor', 'Internista', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Laura', 'Guti√©rrez', '1107897', '1998-01-05', 'lauragutierrez@gmail.com', '0998765432', 'Av. 10 de Agosto y Av. Col√≥n', 2, 'Nutricionista', 'Nutrici√≥n Deportiva', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Carlos', 'Ram√≠rez', '1104567898', '1987-06-18', 'carlosramirez@gmail.com', '0976543210', 'Calle Rocafuerte y Av. 9 de Octubre', 7, 'Doctor', 'Internista', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Fernanda', 'D√≠az', '1104567899', '1993-11-28', 'fernandadiaz@gmail.com', '0987654321', 'Av. 6 de Dici y Av. Naciones Unidas', 3, 'Nutricionista', 'Nutrici√≥n Cl√≠nica', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Andr√©s', 'Fern√°ndez', '1104567900', '1981-03-22', 'andresfernandez@gmail.com', '0998765432', 'Calle Olmedo y Av. 9 de Octubre', 14, 'Doctor', 'Traumatolog√≠a', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Sof√≠a', 'Gonz√°lez', '1104567901', '1996-08-12', 'sofiagonzalez@gmail.com', '0976543210', 'Av. 12 de Octubre y Av. Patria', 2, 'Nutricionista', 'Nutrici√≥n Deportiva', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Diego', 'Moreno', '1104567902', '1989-05-30', 'diegomoreno@gmail.com', '0987654321', 'Calle Sucre y Av. 9 Octubre', 5, 'Doctor', 'General', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Valentina', 'Paz', '1104567903', '1991-02-18', 'valentinapaz@gmail.com', '0998765432', 'Av. Amazonas y Av. Naciones Unidas', 4, 'Nutricionista', 'Internista', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Gabriel', 'Rojas', '1104567904', '1983-11-10', 'gabrielrojas@gmail.com', '0976543210', 'Calle Bol√≠var y Av. 9 de Octubre', 11, 'Doctor', 'General', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Isabella', 'Santos', '1104567905', '1997-06-05', 'isabellasantos@gmail.com', '0987654321', 'Av. 6 de Diciembre y Av. Naciones Unidas', 2, 'Nutricionista', 'Nutrici√≥n Deportiva', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Miguel', 'Torres', '1104567906', '1986-01-30', 'migueltorres@gmail.com', '0998765432', 'Calle Rocafuerte y Av. 9 de Octubre', 6, 'Doctor', 'Traumatolog√≠a', 1, 0, 'Tiempo Completo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Valeria', 'Vargas', '1104567907', '1994-04-25', 'valeriavargas@gmail.com', '0976543210', 'Av. 12 de Octubre y Av. Patria', 3, 'Nutricionista', 'Nutrici√≥n Cl√≠nica', 1, 1, 'Medio Tiempo');
+INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
+VALUES ('Javier', 'Zambrano', '1104567908', '1982-09-22', 'javierzambrano@gmail.com', '0987654321', 'Calle Sucre y Av. 9 de Octubre', 13, 'Doctor', 'Cardiolog√≠a', 1, 0, 'Tiempo Completo');
+
+
+
+--Insert Tabla Ingrediente
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Manzana', 'Fruta dulce y jugosa', 'Vitamina C, Fibra', 0.3, 0.4, 10.3, 2.4);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Pl√°tano', 'Fruta tropical rica en potasio', 'Vitamina B6, Fibra', 1.1, 0.2, 22, 2.6);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Zanahoria', 'Ra√≠z vegetal anaranjada', 'Vitamina A, Fibra', 0.9, 0.2, 6.8, 2.8);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Esp√°rragos', 'Vegetal verde y delgado', 'Vitamina K, Fibra', 2.2, 0.2, 3.7, 2);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Pollo', 'Carne blanca baja en grasas', 'Vitamina B12, Prote√≠na', 20.4, 1.3, 0, 0);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Salm√≥n', 'Pescado rico en √°cidos grasos', 'Vitamina D, Omega-3', 22, 13.4, 0, 0);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Cebolla', 'Vegetal con sabor fuerte', 'Vitamina C, Fibra', 1.2, 0.1, 9.3, 1.7);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Arroz integral', 'Grano entero con fibra', 'Vitamina B1, Fibra', 7.1, 2.2, 77.5, 3.5);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Huevo', 'Alimento rico en prote√≠nas', 'Vitamina B12, Prote√≠na', 12.6, 9.5, 0.6, 0);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Lechuga', 'Hojas verdes para ensaladas', 'Vitamina K, Fibra', 1.4, 0.2, 2.9, 1.3);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Tomate', 'Fruta roja y jugosa', 'Vitamina C, Fibra', 0.9, 0.2, 3.9, 1.2);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Pimiento', 'Vegetal picante y colorido', 'Vitamina A, Vitamina C', 0.9, 0.3, 4.6, 1.5);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Garbanzos', 'Legumbre rica en prote√≠nas', 'Hierro, Fibra', 19, 6, 61, 17);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Aceite de oliva', 'Aceite vegetal saludable', 'Grasas monoinsaturadas', 0, 91, 0, 0);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Yogur griego', 'Yogur espeso y cremoso', 'Calcio, Prote√≠na', 10, 0.4, 3.6, 0);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Avena', 'Cereal integral nutritivo', 'Fibra, Magnesio', 13, 7, 56, 10);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Nueces', 'Fruto seco saludable', '√°cidos grasos omega-3, Prote√≠na', 15, 65, 14, 7);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Lentejas', 'Legumbre rica en hierro', 'Hierro, Prote√≠na', 25, 1.4, 60, 11);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Pera', 'Fruta jugosa y refrescante', 'Vitamina C, Fibra', 0.4, 0.2, 10.7, 2);
+INSERT INTO Ingrediente (nombre, descripcion, microNutrienetes, proteina, grasas, carbohidratos, fibra) 
+VALUES ('Quinoa', 'Grano sin gluten con prote√≠nas', 'Fibra, Magnesio', 14, 6, 64, 7);
+
+
+--Insert Tabla Comida
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (25.5, 30.2, 10.1, 5.3, 'Ensalada de pollo con verduras: mezcla lechuga, pollo cocido, tomate, pepino, zanahoria y cebolla. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (15.3, 40.5, 0.2, 8.7, 'Arroz con pollo y vegetales: cocina el arroz y saltea pollo, cebolla, pimiento y zanahoria. Mezcla todo y sirve caliente.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (20.1, 35.6, 7.8, 6.4, 'Salm√≥n a la parrilla con ensalada de espinacas: sazona el salm√≥n con sal y pimienta y √°salo a la parrilla. Sirve con una ensalada de espinacas, tomate y aguacate.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (18.7, 25., 12.3, 4.5, 'Hamburguesa de pavo con ensalada de col: mezcla carne de pavo molida con cebolla, ajo y especias. Forma las hamburguesas y √°salas a la parrilla. Sirve con una ensalada de col y zanahoria.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (22.4, 28.9, 8.6, 7.1, 'Pollo al curry con arroz integral: saltea pollo, cebolla y pimiento en una sart√©n. Agrega curry en polvo y leche de coco. Sirve con arroz integral cocido.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (16.8, 32.1, 6.9, 5.8, 'Ensalada de at√∫n con aguacate y tomate: mezcla lechuga, at√∫n enlatado, aguacate y tomate. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (19.5, 38.7, 9.2, 6.3, 'Pasta con salsa de tomate y alb√≥ndigas: cocina la pasta y prepara alb√≥ndigas con carne molida, huevo, pan rallado y especias. Sirve con salsa de tomate casera.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (21.2, 27.5, 11.4, 0.9, 'Pollo a la plancha con pur√© de papas: √°sala el pollo a la plancha y sirve con pur√© de papas hecho con leche y mantequilla.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (17.9, 31.4, 8.3, 5.6, 'Ensalada de salm√≥n con aguacate y quinoa: mezcla salm√≥n cocido, aguacate, quinoa y espinacas. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (23.1, 29.8, 7.5, 6.9, 'Tacos de pollo con salsa de tomate y guacamole: saltea pollo, cebolla y pimiento en una sart√©n. Sirve en tortillas de ma√≠z con salsa de tomate y guacamole.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (14.5, 42.3, 4.8, 9.2, 'Arroz con lentejas y verduras: cocina arroz integral y lentejas. Saltea zanahoria, cebolla y pimiento en una sart√©n. Mezcla todo y sirve caliente.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (18.3, 33.6, 6.7, 5.4, 'Ensalada de pollo con manzana y nueces: mezcla lechuga, pollo cocido, manzana y nueces. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (20.7, 26.9, 10.1, 4.8, 'Salm√≥n al horno con patatas y zanahorias: sazona el salm√≥n con sal y pimienta y √°salo al horno. Sirve con patatas y zanahorias asadas.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (16.2, 29.5, 7.2, 5.1, 'Ensalada de pollo con aguacate y tomate cherry: mezcla lechuga, pollo cocido, aguacate y tomate cherry. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (22.9, 34.8, 8.9, 6.7, 'Pasta con salsa de champi√±ones y pollo: cocina la pasta y saltea champi√±ones y pollo en una sart√©n. Agrega crema de leche y queso parmesano. Sirve con la pasta.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (19.3, 27.6, 11.8, 5.7, 'Pollo al horno con arroz y verduras: sazona el pollo con sal y pimienta y √°salo al horno. Sirve con arroz y verduras asadas.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (17.6, 30.9, 7.9, 5.3, 'Ensalada de atun con huevo y lechuga: mezcla lechuga, at√∫n enlatado, huevo cocido y tomate. Ali√±a con aceite de oliva y vinagre bals√≥mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (21.5, 36.2, 9.5, 7.2, 'Arroz con pollo y verduras al curry: cocina arroz y saltea pollo, cebolla, pimiento y zanahoria en una sart√©n. Agrega curry en polvo y leche de coco. Sirve con el arroz.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (15.8, 28.4, 6.1, 0.9, 'Ensalada de pollo con espinacas y fresas: mezcla espinacas, pollo cocido, fresas y nueces. Ali√±a con aceite de oliva y vinagre bals√°mico.');
+INSERT INTO Comida (cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
+VALUES (24.3, 31.7, 8.3, 7.5, 'Tacos de pescado con salsa de aguacate y cilantro: sazona el pescado con sal y pimienta a la parrilla. Sirve en tortillas de ma√≠z con salsa de aguacate y cilantro.');
+
+
+
+/*
+**********************************
 -- Objetos Programables
 **********************************
 */
@@ -486,50 +705,50 @@ CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
 --Verificar si existe el Procedimiento Almacenado
 IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoPlanEntrenamiento')
 BEGIN
-††† DROP PROCEDURE ingresoPlanEntrenamiento
+¬†¬†¬† DROP PROCEDURE ingresoPlanEntrenamiento
 END
 GO
---CreaciÛn de un Procedimiento Almacenado que permita ingresar un registro a la tabla PlanEntrenamiento,†
---a travÈs de la cÈdula del paciente, y el nombre del examen.†
+--Creaci√≥n de un Procedimiento Almacenado que permita ingresar un registro a la tabla PlanEntrenamiento,¬†
+--a trav√©s de la c√©dula del paciente, y el nombre del examen.¬†
 CREATE PROCEDURE ingresoPlanEntrenamiento
-††† --Se declaran los argumentos que recibe el procedimiento almacenado
-††† @nombre VARCHAR(20),
-††† @intensidad VARCHAR(5),
-††† @objetivoPlan NVARCHAR(40),
-††† @fechaInicio DATE,
-††† @fechaCambio DATE,
-††† @monitoreo CHAR (7),
+¬†¬†¬† --Se declaran los argumentos que recibe el procedimiento almacenado
+¬†¬†¬† @nombre VARCHAR(20),
+¬†¬†¬† @intensidad VARCHAR(5),
+¬†¬†¬† @objetivoPlan NVARCHAR(40),
+¬†¬†¬† @fechaInicio DATE,
+¬†¬†¬† @fechaCambio DATE,
+¬†¬†¬† @monitoreo CHAR (7),
 	@numeroCedulaC cedulaIdentidad,
 	@numeroCedulaE cedulaIdentidad
 AS
-††† --Se verifica si existe el cliente con esa cÈdula que se est· intentando ingresar.
-††† IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
-††† BEGIN
-††††††† RAISERROR('El cliente no existe.',16,10)
-††† END
-††† ELSE
-††† BEGIN
-††††††† --Se verifica si existe el entrenador con esa cÈdula que se est· intentando ingresar.†
-††††††† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
-††††††† BEGIN
-††††††††††† RAISERROR('El entrenador no existe.',16,10)
-††††††† END
-††††††† ELSE
-††††††† BEGIN
-††††††††††† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del examen.†
-††††††††††† DECLARE @idCliente SMALLINT
-††††††††††† DECLARE @idEntrenador TINYINT
+¬†¬†¬† --Se verifica si existe el cliente con esa c√©dula que se est√° intentando ingresar.
+¬†¬†¬† IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† RAISERROR('El cliente no existe.',16,10)
+¬†¬†¬† END
+¬†¬†¬† ELSE
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† --Se verifica si existe el entrenador con esa c√©dula que se est√° intentando ingresar.¬†
+¬†¬†¬†¬†¬†¬†¬† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† RAISERROR('El entrenador no existe.',16,10)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬†¬†¬†¬†¬† ELSE
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del examen.¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idCliente SMALLINT
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idEntrenador TINYINT
 
-†
+¬†
 
-††††††††††† SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
-††††††††††† SET @idEntrenador = (SELECT idEntrenador FROM Entrenador WHERE numeroCedula = @numeroCedulaE);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idEntrenador = (SELECT idEntrenador FROM Entrenador WHERE numeroCedula = @numeroCedulaE);
 
-††††††††††† --Se realiza la inserciÛn de la tupla en la tabla Resultado.
-††††††††††† INSERT INTO PlanEntrenamiento(idCliente,idEntrenador,nombre,intensidad,objetivoPlan,fechaInicio,fechaCambio)†
-††††††††††† VALUES(@idCliente,@idEntrenador,@nombre,@intensidad,@objetivoPlan,@fechaInicio,@fechaCambio)
-††††††† END
-††† END
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Se realiza la inserci√≥n de la tupla en la tabla Resultado.
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† INSERT INTO PlanEntrenamiento(idCliente,idEntrenador,nombre,intensidad,objetivoPlan,fechaInicio,fechaCambio)¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† VALUES(@idCliente,@idEntrenador,@nombre,@intensidad,@objetivoPlan,@fechaInicio,@fechaCambio)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬† END
 GO
 
 
@@ -542,14 +761,14 @@ GO
 --Verificar si existe el Procedimiento Almacenado
 IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoRutina')
 BEGIN
-††† DROP PROCEDURE ingresoRutina
+¬†¬†¬† DROP PROCEDURE ingresoRutina
 END
 GO
---CreaciÛn de un Procedimiento Almacenado que permita ingresar un registro a la tabla Rutina,†
---a travÈs del nombre del plan de entrenamiento.†
+--Creaci√≥n de un Procedimiento Almacenado que permita ingresar un registro a la tabla Rutina,¬†
+--a trav√©s del nombre del plan de entrenamiento.¬†
 CREATE PROCEDURE ingresoRutina
-††† --Se declaran los argumentos que recibe el procedimiento almacenado
-††† @nombreEjercicio NVARCHAR(30),
+¬†¬†¬† --Se declaran los argumentos que recibe el procedimiento almacenado
+¬†¬†¬† @nombreEjercicio NVARCHAR(30),
 	@descripcionEjercicio NVARCHAR(120) ,
 	@grupoMuscular NVARCHAR(20) ,
 	@cantidadRepeticiones TINYINT ,
@@ -560,26 +779,26 @@ CREATE PROCEDURE ingresoRutina
 	@asistencia BIT,
 	@nombre VARCHAR (20)
 AS
-††† --Se verifica si existe el plan de entrenamiento con el nombre que se est· intentando ingresar.
-††† IF (SELECT COUNT(*) FROM PlanEntrenamiento WHERE nombre = @nombre) = 0
-††† BEGIN
-††††††† RAISERROR('El plan de entrenamiento no existe.',16,10)
-††† END
-††† ELSE
-††††††† 
-††††††† BEGIN
-††††††††††† --Si el plan de entrenamient existe, se obtiene el id del plan de entrenamiento.†
-††††††††††† DECLARE @idPlanEntrenamiento SMALLINT
-†
-††††††††††† SET @idPlanEntrenamiento = (SELECT idPlanEntrenamiento FROM PlanEntrenamiento WHERE nombre = @nombre);
+¬†¬†¬† --Se verifica si existe el plan de entrenamiento con el nombre que se est√° intentando ingresar.
+¬†¬†¬† IF (SELECT COUNT(*) FROM PlanEntrenamiento WHERE nombre = @nombre) = 0
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† RAISERROR('El plan de entrenamiento no existe.',16,10)
+¬†¬†¬† END
+¬†¬†¬† ELSE
+¬†¬†¬†¬†¬†¬†¬† 
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Si el plan de entrenamient existe, se obtiene el id del plan de entrenamiento.¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idPlanEntrenamiento SMALLINT
+¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idPlanEntrenamiento = (SELECT idPlanEntrenamiento FROM PlanEntrenamiento WHERE nombre = @nombre);
 
-††††††††††† --Se realiza la inserciÛn de la tupla en la tabla Resultado.
-††††††††††† INSERT INTO Rutina(idPlanEntrenamiento, nombreEjercicio, descripcionEjercicio, grupoMuscular, cantidadRepeticiones, 
-								tiempoDescanso, cantidadSeries,diaSemana,caloriasQuemadas,asistencia)†
-††††††††††† VALUES(@idPlanEntrenamiento,@nombreEjercicio,@descripcionEjercicio,@grupoMuscular,@cantidadRepeticiones,
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Se realiza la inserci√≥n de la tupla en la tabla Resultado.
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† INSERT INTO Rutina(idPlanEntrenamiento, nombreEjercicio, descripcionEjercicio, grupoMuscular, cantidadRepeticiones, 
+								tiempoDescanso, cantidadSeries,diaSemana,caloriasQuemadas,asistencia)¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† VALUES(@idPlanEntrenamiento,@nombreEjercicio,@descripcionEjercicio,@grupoMuscular,@cantidadRepeticiones,
 					@tiempoDescanso,@cantidadSeries,@diaSemana,@caloriasQuemadas,@asistencia)
-††††††† END
-††† 
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬† 
 GO
 
 
@@ -592,14 +811,14 @@ GO
 --Verificar si existe el Procedimiento Almacenado
 IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaCliente')
 BEGIN
-††† DROP PROCEDURE ingresoCitaCliente
+¬†¬†¬† DROP PROCEDURE ingresoCitaCliente
 END
 GO
---CreaciÛn de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,†
---a travÈs de la cedula del cliente.†
+--Creaci√≥n de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,¬†
+--a trav√©s de la cedula del cliente.¬†
 CREATE PROCEDURE ingresoCitaCliente
-††† --Se declaran los argumentos que recibe el procedimiento almacenado
-††† @nombre VARCHAR (20),
+¬†¬†¬† --Se declaran los argumentos que recibe el procedimiento almacenado
+¬†¬†¬† @nombre VARCHAR (20),
 	@fechaCita SMALLDATETIME,
 	@tipo NVARCHAR(15),
 	@descripcion NVARCHAR (25),
@@ -609,34 +828,34 @@ CREATE PROCEDURE ingresoCitaCliente
 	@numeroCedulaP cedulaIdentidad
 
 AS
-††† --Se verifica si existe el cliente con esa cÈdula que se est· intentando ingresar.
-††† IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
-††† BEGIN
-††††††† RAISERROR('El cliente no existe.',16,10)
-††† END
-††† ELSE
-††† BEGIN
-††††††† --Se verifica si existe el personal de salud con esa cÈdula que se est· intentando ingresar.†
-††††††† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
-††††††† BEGIN
-††††††††††† RAISERROR('El personal de salud no existe.',16,10)
-††††††† END
-††††††† ELSE
-††††††† BEGIN
-††††††††††† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.†
-††††††††††† DECLARE @idCliente SMALLINT
-††††††††††† DECLARE @idPersonalSalud TINYINT
+¬†¬†¬† --Se verifica si existe el cliente con esa c√©dula que se est√° intentando ingresar.
+¬†¬†¬† IF (SELECT COUNT(*) FROM Cliente WHERE numeroCedula = @numeroCedulaC) = 0
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† RAISERROR('El cliente no existe.',16,10)
+¬†¬†¬† END
+¬†¬†¬† ELSE
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† --Se verifica si existe el personal de salud con esa c√©dula que se est√° intentando ingresar.¬†
+¬†¬†¬†¬†¬†¬†¬† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† RAISERROR('El personal de salud no existe.',16,10)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬†¬†¬†¬†¬† ELSE
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idCliente SMALLINT
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idPersonalSalud TINYINT
 
-†
+¬†
 
-††††††††††† SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
-††††††††††† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idCliente = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaC);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
 
-††††††††††† --Se realiza la inserciÛn de la tupla en la tabla Cita.
-††††††††††† INSERT INTO Cita(idPersonalSalud,idCliente,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)†
-††††††††††† VALUES(@idPersonalSalud,@idCliente,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
-††††††† END
-††† END
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Se realiza la inserci√≥n de la tupla en la tabla Cita.
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† INSERT INTO Cita(idPersonalSalud,idCliente,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† VALUES(@idPersonalSalud,@idCliente,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬† END
 GO
 
 /*
@@ -648,14 +867,14 @@ GO
 --Verificar si existe el Procedimiento Almacenado
 IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaEntrenador')
 BEGIN
-††† DROP PROCEDURE ingresoCitaEntrenador
+¬†¬†¬† DROP PROCEDURE ingresoCitaEntrenador
 END
 GO
---CreaciÛn de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,†
---a travÈs de la cedula del cliente.†
+--Creaci√≥n de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,¬†
+--a trav√©s de la cedula del cliente.¬†
 CREATE PROCEDURE ingresoCitaEntrenador
-††† --Se declaran los argumentos que recibe el procedimiento almacenado
-††† @nombre VARCHAR (20),
+¬†¬†¬† --Se declaran los argumentos que recibe el procedimiento almacenado
+¬†¬†¬† @nombre VARCHAR (20),
 	@fechaCita SMALLDATETIME,
 	@tipo NVARCHAR(15),
 	@descripcion NVARCHAR (25),
@@ -665,34 +884,34 @@ CREATE PROCEDURE ingresoCitaEntrenador
 	@numeroCedulaP cedulaIdentidad
 
 AS
-††† --Se verifica si existe el cliente con esa cÈdula que se est· intentando ingresar.
-††† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
-††† BEGIN
-††††††† RAISERROR('El entrenador no existe.',16,10)
-††† END
-††† ELSE
-††† BEGIN
-††††††† --Se verifica si existe el personal de salud con esa cÈdula que se est· intentando ingresar.†
-††††††† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
-††††††† BEGIN
-††††††††††† RAISERROR('El personal de salud no existe.',16,10)
-††††††† END
-††††††† ELSE
-††††††† BEGIN
-††††††††††† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.†
-††††††††††† DECLARE @idEntrenador SMALLINT
-††††††††††† DECLARE @idPersonalSalud TINYINT
+¬†¬†¬† --Se verifica si existe el cliente con esa c√©dula que se est√° intentando ingresar.
+¬†¬†¬† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† RAISERROR('El entrenador no existe.',16,10)
+¬†¬†¬† END
+¬†¬†¬† ELSE
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† --Se verifica si existe el personal de salud con esa c√©dula que se est√° intentando ingresar.¬†
+¬†¬†¬†¬†¬†¬†¬† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† RAISERROR('El personal de salud no existe.',16,10)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬†¬†¬†¬†¬† ELSE
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idEntrenador SMALLINT
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idPersonalSalud TINYINT
 
-†
+¬†
 
-††††††††††† SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
-††††††††††† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
 
-††††††††††† --Se realiza la inserciÛn de la tupla en la tabla Cita.
-††††††††††† INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)†
-††††††††††† VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
-††††††† END
-††† END
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Se realiza la inserci√≥n de la tupla en la tabla Cita.
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬† END
 GO
 
 
@@ -715,21 +934,21 @@ objetivoCliente NVARCHAR(150) NOT NULL,
 
 /*
 **********************************
--- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Registro MÈdico
+-- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Registro M√©dico
 **********************************
 */
 
 --Verificar si existe el Procedimiento Almacenado
 IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoCitaEntrenador')
 BEGIN
-††† DROP PROCEDURE ingresoCitaEntrenador
+¬†¬†¬† DROP PROCEDURE ingresoCitaEntrenador
 END
 GO
---CreaciÛn de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,†
---a travÈs de la cedula del cliente.†
+--Creaci√≥n de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita,¬†
+--a trav√©s de la cedula del cliente.¬†
 CREATE PROCEDURE ingresoCitaEntrenador
-††† --Se declaran los argumentos que recibe el procedimiento almacenado
-††† @nombre VARCHAR (20),
+¬†¬†¬† --Se declaran los argumentos que recibe el procedimiento almacenado
+¬†¬†¬† @nombre VARCHAR (20),
 	@fechaCita SMALLDATETIME,
 	@tipo NVARCHAR(15),
 	@descripcion NVARCHAR (25),
@@ -739,32 +958,32 @@ CREATE PROCEDURE ingresoCitaEntrenador
 	@numeroCedulaP cedulaIdentidad
 
 AS
-††† --Se verifica si existe el cliente con esa cÈdula que se est· intentando ingresar.
-††† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
-††† BEGIN
-††††††† RAISERROR('El entrenador no existe.',16,10)
-††† END
-††† ELSE
-††† BEGIN
-††††††† --Se verifica si existe el personal de salud con esa cÈdula que se est· intentando ingresar.†
-††††††† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
-††††††† BEGIN
-††††††††††† RAISERROR('El personal de salud no existe.',16,10)
-††††††† END
-††††††† ELSE
-††††††† BEGIN
-††††††††††† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.†
-††††††††††† DECLARE @idEntrenador SMALLINT
-††††††††††† DECLARE @idPersonalSalud TINYINT
+¬†¬†¬† --Se verifica si existe el cliente con esa c√©dula que se est√° intentando ingresar.
+¬†¬†¬† IF (SELECT COUNT(*) FROM Entrenador WHERE numeroCedula = @numeroCedulaE) = 0
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† RAISERROR('El entrenador no existe.',16,10)
+¬†¬†¬† END
+¬†¬†¬† ELSE
+¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬† --Se verifica si existe el personal de salud con esa c√©dula que se est√° intentando ingresar.¬†
+¬†¬†¬†¬†¬†¬†¬† IF (SELECT COUNT(*) FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP) = 0
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† RAISERROR('El personal de salud no existe.',16,10)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬†¬†¬†¬†¬† ELSE
+¬†¬†¬†¬†¬†¬†¬† BEGIN
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud.¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idEntrenador SMALLINT
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† DECLARE @idPersonalSalud TINYINT
 
-†
+¬†
 
-††††††††††† SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
-††††††††††† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idEntrenador = (SELECT idCliente FROM Cliente WHERE numeroCedula = @numeroCedulaE);
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† SET @idPersonalSalud = (SELECT idPersonalSalud FROM PersonalSalud WHERE numeroCedula = @numeroCedulaP);
 
-††††††††††† --Se realiza la inserciÛn de la tupla en la tabla Cita.
-††††††††††† INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)†
-††††††††††† VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
-††††††† END
-††† END
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† --Se realiza la inserci√≥n de la tupla en la tabla Cita.
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† INSERT INTO Cita(idPersonalSalud,idEntrenador,nombre,fechaCita,tipo,descripcion,asistencia,fechaAsistencia)¬†
+¬†¬†¬†¬†¬†¬†¬†¬†¬†¬†¬† VALUES(@idPersonalSalud,@idEntrenador,@nombre,@fechaCita,@tipo,@descripcion,@asistencia,@fechaAsistencia)
+¬†¬†¬†¬†¬†¬†¬† END
+¬†¬†¬† END
 GO
