@@ -454,10 +454,21 @@ CONSTRAINT CK_Cantidad CHECK (cantidad>0),
 CONSTRAINT CK_Unidad CHECK (unidad IN ('gramos','kilos','onzas','cucharadas','litros','libras','cucharaditas'))
 );
 
+CREATE TABLE ReporteIncidente (
+idReporteIncidente SMALLINT IDENTITY (1,1),
+idCliente SMALLINT NOT NULL,
+idEntrenador TINYINT NOT NULL,
+idPersonalSalud TINYINT NOT NULL,
+descripcionIncidente NVARCHAR (200) NOT NULL,
+fechaIncidente DATE DEFAULT GETDATE(),
+CONSTRAINT PK_
+
+
+);
+
 /*
 **********************************
 -- Objetos Programables
 **********************************
 */
 
- 
