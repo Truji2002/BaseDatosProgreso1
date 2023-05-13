@@ -1,3 +1,6 @@
+Use Gimnasio
+Go
+
 /*
 **********************************
 -- INSERTS
@@ -212,7 +215,7 @@ VALUES ('Ensalada de atun y h', 17.6, 30.9, 7.9, 5.3, 'Ensalada de atun con huev
 INSERT INTO Comida (nombre, cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
 VALUES ('Arroz con pollo', 21.5, 36.2, 9.5, 7.2, 'Arroz con pollo y verduras al curry: cocina arroz y saltea pollo, cebolla, pimiento y zanahoria en una sartén. Agrega curry en polvo y leche de coco. Sirve con el arroz.');
 INSERT INTO Comida (nombre, cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
-VALUES ('Ensalada de pollo',15.8, 28.4, 6.1, 0.9, 'Ensalada de pollo con espinacas y fresas: mezcla espinacas, pollo cocido, fresas y nueces. Aliña con aceite de oliva y vinagre balsámico.');
+VALUES ('Ensalada de pollo es',15.8, 28.4, 6.1, 0.9, 'Ensalada de pollo con espinacas y fresas: mezcla espinacas, pollo cocido, fresas y nueces. Aliña con aceite de oliva y vinagre balsámico.');
 INSERT INTO Comida (nombre, cantidadProteina, cantidadCarbohidratos, cantidadGrasas, cantidadFibra, preparacion) 
 VALUES ('Tacos de pescado',24.3, 31.7, 8.3, 7.5, 'Tacos de pescado con salsa de aguacate y cilantro: sazona el pescado con sal y pimienta a la parrilla. Sirve en tortillas de maíz con salsa de aguacate y cilantro.');
 
@@ -224,91 +227,70 @@ VALUES ('Tacos de pescado',24.3, 31.7, 8.3, 7.5, 'Tacos de pescado con salsa de 
 */
 
 --Ingreso de datos en la tabla PlanEntrenamiento
-EXEC ingresoPlanEntrenamiento 'Plan 1', 'Alta', 'Perder peso', '2023-05-11', '2023-05-31', 'Semanal', 1, '123456789', '987654321'
-EXEC ingresoPlanEntrenamiento 'Plan 2', 'Media', 'Tonificar músculos', '2023-05-12', '2023-06-01', 'Mensual', 0, '111111111', '222222222'
-EXEC ingresoPlanEntrenamiento 'Plan 3', 'Baja', 'Mejorar flexibilidad', '2023-05-13', '2023-06-02', NULL, NULL, '333333333', '444444444'
-EXEC ingresoPlanEntrenamiento 'Plan 4', 'Alta', 'Ganar masa muscular', '2023-05-14', '2023-06-03', 'Semanal', 1, '555555555', '666666666'
-EXEC ingresoPlanEntrenamiento 'Plan 5', 'Media', 'Mejorar resistencia', '2023-05-15', '2023-06-04', 'Mensual', 0, '777777777', '888888888'
-EXEC ingresoPlanEntrenamiento 'Plan 6', 'Baja', 'Reducir estrés', '2023-05-16', '2023-06-05', NULL, NULL, '999999999', '000000000'
-EXEC ingresoPlanEntrenamiento 'Plan 7', 'Alta', 'Aumentar velocidad', '2023-05-17', '2023-06-06', 'Semanal', 1, '111111111', '222222222'
-EXEC ingresoPlanEntrenamiento 'Plan 8', 'Media', 'Mejorar equilibrio', '2023-05-18', '2023-06-07', 'Mensual', 0, '333333333', '444444444'
-EXEC ingresoPlanEntrenamiento 'Plan 9', 'Baja', 'Mejorar postura', '2023-05-19', '2023-06-08', NULL, NULL, '555555555', '666666666'
-EXEC ingresoPlanEntrenamiento 'Plan 10', 'Alta', 'Aumentar fuerza', '2023-05-20', '2023-06-09', 'Semanal', 1, '777777777', '888888888'
-EXEC ingresoPlanEntrenamiento 'Plan 11', 'Media', 'Mejorar coordinación', '2023-05-21', '2023-06-10', 'Mensual', 0, '999999999', '000000000'
-EXEC ingresoPlanEntrenamiento 'Plan 12', 'Baja', 'Mejorar agilidad', '2023-05-22', '2023-06-11', NULL, NULL, '111111111', '222222222'
-EXEC ingresoPlanEntrenamiento 'Plan 13', 'Alta', 'Mejorar resistencia cardiovascular', '2023-05-23', '2023-06-12', 'Semanal', 1, '333333333', '444444444'
-EXEC ingresoPlanEntrenamiento 'Plan 14', 'Media', 'Mejorar flexibilidad muscular', '2023-05-24', '2023-06-13', 'Mensual', 0, '555555555', '666666666'
-EXEC ingresoPlanEntrenamiento 'Plan 15', 'Baja', 'Mejorar movilidad articular', '2023-05-25', '2023-06-14', NULL, NULL, '777777777', '888888888'
-EXEC ingresoPlanEntrenamiento 'Plan 16', 'Alta', 'Mejorar potencia muscular', '2023-05-26', '2023-06-15', 'Semanal', 1, '999999999', '000000000'
-EXEC ingresoPlanEntrenamiento 'Plan 17', 'Media', 'Mejorar velocidad de reacción', '2023-05-27', '2023-06-16', 'Mensual', 0, '111111111', '222222222'
-EXEC ingresoPlanEntrenamiento 'Plan 18', 'Baja', 'Mejorar estabilidad corporal', '2023-05-28', '2023-06-17', NULL, NULL, '333333333', '444444444'
-EXEC ingresoPlanEntrenamiento 'Plan 19', 'Alta', 'Mejorar capacidad anaeróbica', '2023-05-29', '2023-06-18', 'Semanal', 1, '555555555', '666666666'
-EXEC ingresoPlanEntrenamiento 'Plan 20', 'Media', 'Mejorar capacidad aeróbica', '2023-05-30', '2023-06-19', 'Mensual', 0, '777777777', '888888888'
+EXEC ingresoPlanEntrenamiento 'Plan peso a', 'Alta', 'Perder peso', '2023-08-13', '2023-09-20', 'Semanal', 1, '1104491862', '1000123456'
+EXEC ingresoPlanEntrenamiento 'Plan tonificar m', 'Media', 'Tonificar músculos', '2023-09-18', '2023-10-01', 'Mensual', 0, '1758326503', '0109012345'
+EXEC ingresoPlanEntrenamiento 'Plan flexibilidad b', 'Baja', 'Mejorar flexibilidad', '2023-10-13', '2023-11-02', NULL, NULL, '0923081847', '1008901234'
+EXEC ingresoPlanEntrenamiento 'Plan musculo a', 'Alta', 'Ganar masa muscular', '2023-11-14', '2023-12-03', 'Semanal', 1, '0911276548', '1707890123'
+EXEC ingresoPlanEntrenamiento 'Plan resistencia m', 'Media', 'Mejorar resistencia', '2023-10-15', '2023-11-04', 'Mensual', 0, '1705682925', '1106789016'
+EXEC ingresoPlanEntrenamiento 'Plan estrés b', 'Baja', 'Reducir estrés', '2023-09-16', '2023-10-05', NULL, NULL, '1301167859', '1105678904'
+EXEC ingresoPlanEntrenamiento 'Plan velocidad a', 'Alta', 'Aumentar velocidad', '2023-08-17', '2023-09-06', 'Semanal', 1, '1721694285', '1000052132'
+EXEC ingresoPlanEntrenamiento 'Plan equilibrio m', 'Media', 'Mejorar equilibrio', '2023-09-18', '2023-10-07', 'Mensual', 0, '1705862756', '1002858874'
+EXEC ingresoPlanEntrenamiento 'Plan postura b', 'Baja', 'Mejorar postura', '2023-09-19', '2023-10-08', NULL, NULL, '1741643297', '1102345679'
+EXEC ingresoPlanEntrenamiento 'Plan fuerza a', 'Alta', 'Aumentar fuerza', '2023-10-20', '2023-11-09', 'Semanal', 1, '1708071024', '1101234568'
+EXEC ingresoPlanEntrenamiento 'Plan coordinación m', 'Media', 'Mejorar coordinación', '2023-11-21', '2023-12-10', 'Mensual', 0, '0412864712', '1100123456'
+EXEC ingresoPlanEntrenamiento 'Plan agilidad b', 'Baja', 'Mejorar agilidad', '2023-10-22', '2023-11-11', NULL, NULL, '1708071024', '1109012345'
+EXEC ingresoPlanEntrenamiento 'Plan cardiovascular a', 'Alta', 'Mejorar resistencia cardiovascular', '2023-09-23', '2023-10-12', 'Semanal', 1, '0913876254', '1108901234'
+EXEC ingresoPlanEntrenamiento 'Plan flexibilidad m', 'Media', 'Mejorar flexibilidad muscular', '2023-08-24', '2023-09-13', 'Mensual', 0, '1209567834', '1107890123'
+EXEC ingresoPlanEntrenamiento 'Plan articular b', 'Baja', 'Mejorar movilidad articular', '2023-07-25', '2023-08-14', NULL, NULL, '1203567890', '1106789012'
+EXEC ingresoPlanEntrenamiento 'Plan potencia a', 'Alta', 'Mejorar potencia muscular', '2023-08-26', '2023-09-15', 'Semanal', 1, '1754446720', '1105678901'
+EXEC ingresoPlanEntrenamiento 'Plan velocidad m', 'Media', 'Mejorar velocidad de reacción', '2023-09-27', '2023-10-16', 'Mensual', 0, '1303753618', '1104567890'
+EXEC ingresoPlanEntrenamiento 'Plan estabulidad b', 'Baja', 'Mejorar estabilidad corporal', '2023-10-28', '2023-11-17', NULL, NULL, '1103756134', '1103456789'
+EXEC ingresoPlanEntrenamiento 'Plan anaeróbica a', 'Alta', 'Mejorar capacidad anaeróbica', '2023-11-29', '2023-12-18', 'Semanal', 1, '1305267542', '1102345678'
+EXEC ingresoPlanEntrenamiento 'Plan aeróbica m', 'Media', 'Mejorar capacidad aeróbica', '2023-10-30', '2023-11-19', 'Mensual', 0, '1200984761', '1101234567'
+
 
 --Ingreso de datos en la tabla Rutina
-EXEC ingresoRutina 'Flexiones', 'Ejercicio de fuerza para pecho y brazos', 'Pecho', 5, 1.5, 3, 'Lunes', 50.0, 'Plan 1'
-EXEC ingresoRutina 'Sentadillas', 'Ejercicio de fuerza para piernas', 'Piernas', 12, 2.0, 4, 'Martes', 70.0, 'Plan 1'
-EXEC ingresoRutina 'Abdominales', 'Ejercicio de fuerza para abdomen', 'Abdomen', 15, 1.0, 3, 'Miercoles', 40.0, 'Plan 1'
-EXEC ingresoRutina 'Press de hombros', 'Ejercicio de fuerza para hombros', 'Hombros', 8, 2.5, 3, 'Jueves', 60.0, 'Plan 1'
-EXEC ingresoRutina 'Remo con mancuernas', 'Ejercicio de fuerza para espalda', 'Espalda', 10, 2.0, 4, 'Viernes', 80.0, 'Plan 1'
-EXEC ingresoRutina 'Curl de biceps', 'Ejercicio de fuerza biceps', 'Biceps', 12, 1.5, 3, 'Sabado', 45.0, 'Plan 1'
-EXEC ingresoRutina 'Prensa de piernas', 'Ejercicio de fuerza para piernas', 'Piernas', 15, 2., 4, 'Lunes', 70.0, 'Plan 2'
-EXEC ingresoRutina 'Plancha', 'Ejercicio de fuerza para abdomen', 'Abdomen', 30, 1.0, 3, 'Martes', 50.0, 'Plan 2'
-EXEC ingresoRutina 'Fondos en paralelas', 'Ejercicio de fuerza para triceps', 'Triceps', 10, 2.5, 3, 'Miercoles', 60.0, 'Plan 2'
-EXEC ingresoRutina 'Dominadas', 'Ejercicio de fuerza para espalda', 'Espalda', 8, 2.0, 4, 'Jueves', 80.0, 'Plan 2'
-EXEC ingresoRutina 'Press de banca', 'Ejercicio de fuerza para pecho', 'Pecho', 12, 1.5, 3, 'Viernes', 55.0, 'Plan 2'
-EXEC ingresoRutina 'Curl de martillo', 'Ejercicio de fuerza para biceps', 'Biceps', 10, 1.5, 3, 'Sabado', 40.0, 'Plan 2'
-EXEC ingresoRutina 'Zancadas', 'Ejercicio de fuerza para piernas', 'Piernas', 15, 2.0, 4, 'Lunes', 75.0, 'Plan 3'
-EXEC ingresoRutina 'Abdominales oblic', 'Ejercicio de fuerza para abdomen', 'Abdomen', 20, 1.0, 3, 'Martes', 60.0, 'Plan 3'
-EXEC ingresoRutina 'Extensiones de triceps', 'Ejercicio de fuerza para triceps', 'Triceps', 12, 2.5, 3, 'Miercoles', 70.0, 'Plan 3'
-EXEC ingresoRutina 'Peso muerto', 'Ejercicio de fuerza para espalda y piernas', 'Espalda', 8, 2.0, 4, 'Jueves', 90.0, 'Plan 3'
-EXEC ingresoRutina 'Flexiones diamante', 'Ejercicio de fuerza para triceps', 'Triceps', 10, 1.5, 3, 'Viernes', 50.0, 'Plan 3'
-EXEC ingresoRutina 'Curl de concentración', 'Ejercicio de fuerza para biceps', 'Biceps', 12, 1.5, 3, 'Sabado', 45., 'Plan 3'
+EXEC ingresoRutina 'Flexiones', 'Ejercicio de fuerza para pecho y brazos', 'Pecho', 5, 12.0, 3, 'Lunes', 50.0, 'Plan peso a'
+EXEC ingresoRutina 'Sentadillas', 'Ejercicio de fuerza para piernas', 'Piernas', 6, 22.0, 4, 'Martes', 70.0, 'Plan peso a'
+EXEC ingresoRutina 'Abdominales', 'Ejercicio de fuerza para abdomen', 'Abdomen', 7, 11.0, 3, 'Miercoles', 40.0, 'Plan peso a'
+EXEC ingresoRutina 'Press de hombros', 'Ejercicio de fuerza para hombros', 'Hombros', 4, 12.5, 3, 'Jueves', 60.0, 'Plan peso a'
+EXEC ingresoRutina 'Remo con mancuernas', 'Ejercicio de fuerza para espalda', 'Espalda', 5, 22.0, 4, 'Viernes', 80.0, 'Plan peso a'
+EXEC ingresoRutina 'Curl de biceps', 'Ejercicio de fuerza biceps', 'Biceps', 6, 21.5, 3, 'Sabado', 45.0, 'Plan tonificar m'
+EXEC ingresoRutina 'Prensa de piernas', 'Ejercicio de fuerza para piernas', 'Piernas', 2, 12., 4, 'Lunes', 70.0, 'Plan tonificar m'
+EXEC ingresoRutina 'Plancha', 'Ejercicio de fuerza para abdomen', 'Abdomen', 7, 21.0, 3, 'Martes', 50.0, 'Plan tonificar m'
+EXEC ingresoRutina 'Fondos en paralelas', 'Ejercicio de fuerza para triceps', 'Triceps', 6, 12.5, 3, 'Miercoles', 60.0, 'Plan tonificar m'
+EXEC ingresoRutina 'Dominadas', 'Ejercicio de fuerza para espalda', 'Espalda', 5, 12.0, 4, 'Jueves', 80.0, 'Plan tonificar m'
+EXEC ingresoRutina 'Press de banca', 'Ejercicio de fuerza para pecho', 'Pecho', 6, 11.5, 3, 'Viernes', 55.0, 'Plan musculo a'
+EXEC ingresoRutina 'Curl de martillo', 'Ejercicio de fuerza para biceps', 'Biceps', 8, 11.5, 3, 'Sabado', 40.0, 'Plan musculo a'
+EXEC ingresoRutina 'Zancadas', 'Ejercicio de fuerza para piernas', 'Piernas', 4, 12.0, 4, 'Lunes', 75.0, 'Plan musculo a'
+EXEC ingresoRutina 'Abdominales oblic', 'Ejercicio de fuerza para abdomen', 'Abdomen', 2, 11.0, 3, 'Martes', 60.0, 'Plan musculo a'
+EXEC ingresoRutina 'Extensiones de triceps', 'Ejercicio de fuerza para triceps', 'Triceps', 3, 12.5, 3, 'Miercoles', 70.0, 'Plan musculo a'
+EXEC ingresoRutina 'Peso muerto', 'Ejercicio de fuerza para espalda y piernas', 'Espalda', 8, 12.0, 4, 'Jueves', 90.0, 'Plan estrés b'
+EXEC ingresoRutina 'Flexiones diamante', 'Ejercicio de fuerza para triceps', 'Triceps', 6, 11.5, 3, 'Viernes', 50.0, 'Plan estrés b'
+EXEC ingresoRutina 'Curl de concentración', 'Ejercicio de fuerza para biceps', 'Biceps', 7, 11.5, 3, 'Sabado', 45., 'Plan estrés b'
 
 --Ingreso de datos en la tabla cita Cliente
-EXEC ingresoCitaCliente 'Juan Perez', '2023-05-15 10:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-15 11:00:00', '123456789', '987654321';
-EXEC ingresoCitaCliente 'Maria Rodriguez', '2023-05-16 14:30:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-16 15:30:00', '111111111', '222222222';
-EXEC ingresoCitaCliente 'Pedro Gomez', '2023-05-17 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-17 12:00:00', '333333333', '444444444';
-EXEC ingresoCitaCliente 'Ana Lopez', '2023-05-18 09:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-18 10:30:00', '555555555', '666666666';
-EXEC ingresoCitaCliente 'Carlos Ramirez', '2023-05-19 15:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-19 16:00:00', '777777777', '888888888';
-EXEC ingresoCitaCliente 'Laura Torres', '2023-05-20 11:30:00', 'Cita médica', 'Consulta general', 1, '2023-05-20 12:30:00', '999999999', '111111111';
-EXEC ingresoCitaCliente 'Jorge Hernandez', '2023-05-21 10:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-21 11:00:00', '222222222', '333333333';
-EXEC ingresoCitaCliente 'Sofia Garcia', '2023-05-22 14:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-22 15:00:00', '444444444', '555555555';
-EXEC ingresoCitaCliente 'Diego Martinez', '2023-05-23 16:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-23 17:30:00', '666666666', '777777777';
-EXEC ingresoCitaCliente 'Fernanda Gonzalez', '2023-05-24 12:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-24 13:00:00', '888888888', '999999999';
-EXEC ingresoCitaCliente 'Ricardo Castro', '2023-05-25 09:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-25 10:00:00', '111111111', '222222222';
-EXEC ingresoCitaCliente 'Valeria Flores', '2023-05-26 13:30:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-26 14:30:00', '333333333', '444444444';
-EXEC ingresoCitaCliente 'Luisa Perez', '2023-05-27 11:00:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-27 12:00:00', '555555555', '666666666';
-EXEC ingresoCitaCliente 'Miguel Rodriguez', '2023-05-28 15:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-28 16:00:00', '777777777', '888888888';
-EXEC ingresoCitaCliente 'Paola Torres', '2023-05-29 10:30:00', 'Cita médica', 'Consulta general', 1, '2023-05-29 11:30:00', '999999999', '111111111';
-EXEC ingresoCitaCliente 'Andres Hernandez', '2023-05-30 14:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-30 15:00:00', '222222222', '333333333';
-EXEC ingresoCitaCliente 'Camila Garcia', '2023-05-31 11:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-31 12:00:00', '444444444', '555555555';
-EXEC ingresoCitaCliente 'Juanita Martinez', '2023-06-01 16:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-06-01 17:30:00', '666666666', '777777777';
-EXEC ingresoCitaCliente 'Pedro Gonzalez', '2023-06-02 12:00:00', 'Cita médica', 'Consulta general', 1, '2023-06-02 13:00:00', '888888888', '999999999';
-EXEC ingresoCitaCliente 'Sara Castro', '2023-06-03 09:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-06-03 10:00:00', '111111111', '222222222';
-
+EXEC ingresoCitaCliente 'Cita 1', '2023-08-15 10:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-15 11:00:00', '1104491862', '1104567908';
+EXEC ingresoCitaCliente 'Cita 2', '2023-08-16 14:30:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-16 15:30:00', '1758326503', '1104567907';
+EXEC ingresoCitaCliente 'Cita 3', '2023-08-17 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-17 12:00:00', '0923081847', '1104567906';
+EXEC ingresoCitaCliente 'Cita 4', '2023-08-18 09:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-18 10:30:00', '0911276548', '1104567905';
+EXEC ingresoCitaCliente 'Cita 5', '2023-08-19 15:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-19 16:00:00', '1705682925', '1104567904';
+EXEC ingresoCitaCliente 'Cita 6', '2023-08-20 11:30:00', 'Cita médica', 'Consulta general', 1, '2023-05-20 12:30:00', '1301167859', '1104567903';
+EXEC ingresoCitaCliente 'Cita 7', '2023-08-21 10:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-21 11:00:00', '1721694285', '1104567902';
+EXEC ingresoCitaCliente 'Cita 8', '2023-08-22 14:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-22 15:00:00', '1705862756', '1104567901';
+EXEC ingresoCitaCliente 'Cita 9', '2023-08-23 16:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-23 17:30:00', '1741643297', '1104567900';
+EXEC ingresoCitaCliente 'Cita 10', '2023-08-24 12:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-24 13:00:00', '0400609954', '1104567899';
 
 --Ingreso de datos en la tabla cita Entrenador
-EXEC ingresoCitaEntrenador 'Juan Perez', '2023-05-12 10:0000', 'Cita médica', 'Consulta general', 1, '2023-05-12 10:30:00', '123456789', '987654321'
-EXEC ingresoCitaEntrenador 'Maria Rodriguez', '2023-05-13 14:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-13 14:30:00', '111111111', '222222222'
-EXEC ingresoCitaEntrenador 'Pedro Gomez', '2023-05-14 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-14 11:30:00', '333333333', '444444444'
-EXEC ingresoCitaEntrenador 'Ana Torres', '2023-05-15 15:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 1, '2023-05-15 15:30:00', '555555555', '666666666'
-EXEC ingresoCitaEntrenador 'Luisa Martinez', '2023-05-16 12:00:00', 'Cita médica', 'Control de glucemia', 0, '2023-05-16 12:30:00', '777777777', '888888888'
-EXEC ingresoCitaEntrenador 'Carlos Sanchez', '2023-05-17 16:00:00', 'Cita nutricionista', 'Plan de alimentación', 1, '2023-05-17 16:30:00', '999999999', '111111111'
-EXEC ingresoCitaEntrenador 'Laura Garcia', '2023-05-18 13:00:00', 'Cita médica', 'Control de presión arterial', 0, '2023-05-18 13:30:00', '222222222', '333333333'
-EXEC ingresoCitaEntrenador 'Jorge Ramirez', '2023-05-19 17:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 1, '2023-05-19 17:30:00', '444444444', '555555555'
-EXEC ingresoCitaEntrenador 'Sofia Hernandez', '2023-05-20 14:00:00', 'Cita médica', 'Control de glucemia', 1, '2023-05-20 14:30:00', '666666666', '777777777'
-EXEC ingresoCitaEntrenador 'Diego Castro', '2023-05-21 18:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-21 18:30:00', '888888888', '999999999'
-EXEC ingresoCitaEntrenador 'Valeria Perez', '2023-05-22 15:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-22 15:30:00', '123456789', '987654321'
-EXEC ingresoCitaEntrenador 'Roberto Rodriguez', '2023-05-23 11:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 0, '2023-05-23 11:30:00', '111111111', '222222222'
-EXEC ingresoCitaEntrenador 'Fernanda Gomez', '2023-05-24 16:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-24 16:30:00', '333333333', '444444444'
-EXEC ingresoCitaEntrenador 'Miguel Torres', '2023-05-25 13:00:00', 'Cita nutricionista', 'Plan de alimentación', 1, '2023-05-25 13:30:00', '555555555', '666666666'
-EXEC ingresoCitaEntrenador 'Paola Martinez', '2023-05-26 17:00:00', 'Cita médica', 'Control de glucemia', 0, '2023-05-26 17:30:00', '777777777', '888888888'
-EXEC ingresoCitaEntrenador 'Andres Sanchez', '2023-05-27 14:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 1, '2023-05-27 14:30:00', '999999999', '111111111'
-EXEC ingresoCitaEntrenador 'Carla Garcia', '2023-05-28 18:00:00', 'Cita médica', 'Control de presión arterial', 0, '2023-05-28 1830:00', '222222222', '333333333'
-EXEC ingresoCitaEntrenador 'Mario Ramirez', '2023-05-29 15:00:00', 'Cita nutricionista', 'Plan de alimentación', 1, '2023-05-29 15:30:00', '444444444', '555555555'
-EXEC ingresoCitaEntrenador 'Isabella Hernandez', '2023-05-30 11:00:00', 'Cita médica', 'Control de glucemia', 1, '2023-05-30 11:30:00', '666666666', '777777777'
-EXEC ingresoCitaEntrenador 'Juan Castro', '2023-05-31 16:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 0, '2023-05-31 16:30:00', '888888888', '999999999'
+EXEC ingresoCitaEntrenador 'Cita 11', '2023-08-12 10:00:00', 'Cita médica', 'Consulta general', 1, '2023-09-12 10:30:00', '1101234567', '1104567898'
+EXEC ingresoCitaEntrenador 'Cita 12', '2023-08-13 14:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-09-13 14:30:00', '1102345678', '1002858866'
+EXEC ingresoCitaEntrenador 'Cita 13', '2023-08-14 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-09-14 11:30:00', '1103456789', '1104567896'
+EXEC ingresoCitaEntrenador 'Cita 14', '2023-08-15 15:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 1, '2023-09-15 15:30:00', '1104567890', '1004567895'
+EXEC ingresoCitaEntrenador 'Cita 15', '2023-08-16 12:00:00', 'Cita médica', 'Control de glucemia', 0, '2023-09-16 12:30:00', '1105678901', '1004567894'
+EXEC ingresoCitaEntrenador 'Cita 16', '2023-08-17 16:00:00', 'Cita nutricionista', 'Plan de alimentación', 1, '2023-09-17 16:30:00', '1106789012', '1704567893'
+EXEC ingresoCitaEntrenador 'Cita 17', '2023-08-18 13:00:00', 'Cita médica', 'Control de presión arterial', 0, '2023-10-18 13:30:00', '1107890123', '1104567892'
+EXEC ingresoCitaEntrenador 'Cita 18', '2023-08-19 17:00:00', 'Cita nutricionista', 'Evaluación de hábitos alimenticios', 1, '2023-08-19 17:30:00', '1108901234', '1104567891'
+EXEC ingresoCitaEntrenador 'Cita 19', '2023-08-20 14:00:00', 'Cita médica', 'Control de glucemia', 1, '2023-09-20 14:30:00', '1109012345', '1104567890'
 
 
 
@@ -332,49 +314,89 @@ EXEC ingresoRegistroMedico 'AB+', 'Crítico', 100.0, 2.00, 40.0, 'Fractura de muñ
 EXEC ingresoRegistroMedico 'O+', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Mejorar flexibilidad', 'Cita 17'
 EXEC ingresoRegistroMedico 'A-', 'Excelente', 80.0, 1.80, 25.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Aumentar masa muscular', 'Cita 18'
 EXEC ingresoRegistroMedico 'B+', 'Bueno', 65.0, 1.65, 20.0, NULL, NULL, 'Hectomorfo', NULL, NULL, 'Mejorar postura', 'Cita 19'
-EXEC ingresoRegistroMedico 'AB-', 'Crítico', 90.0, 1.90, 30.0, 'Esguince de tobillo', 'Hipertensión', 'Mesomorfo', 'Cirugía de hernia', 'Polvo', 'Reducir ansiedad', 'Cita 20'
 
 --Ingreso de datos en la tabla IngredienteComida
-EXEC ingresoIngredienteComida 100, 'gramos', 'Arroz con pollo', 'Arroz';
-EXEC ingresoIngredienteComida 200, 'gramos', 'Arroz con pollo', 'Pollo';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Arroz con pollo', 'Cebolla';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Arroz con pollo', 'Ajo';
-EXEC ingresoIngredienteComida 100, 'gramos', 'Ensalada César', 'Lechuga';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Ensalada César', 'Pollo';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Ensalada César', 'Crutones';
-EXEC ingresoIngredienteComida 20, 'gramos', 'Ensalada César', 'Queso parmesano';
-EXEC ingresoIngredienteComida 100, 'gramos', 'Sopa de pollo', 'Pollo';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Sopa de pollo', 'Zanahoria';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Sopa de pollo', 'Cebolla';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Sopa de pollo', 'Ajo';
-EXEC ingresoIngredienteComida 100, 'gramos', 'Pasta Alfredo', 'Pasta';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Pasta Alfredo', 'Pollo';
-EXEC ingresoIngredienteComida 20, 'gramos', 'Pasta Alfredo', 'Queso parmesano';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Pasta Alfredo', 'Crema de leche';
-EXEC ingresoIngredienteComida 100, 'gramos', 'Hamburguesa', 'Carne de res';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Pan de hamburguesa';
-EXEC ingresoIngredienteComida 20, 'gramos', 'Hamburguesa', 'Queso cheddar';
-EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Lechuga';
+EXEC ingresoIngredienteComida 100, 'gramos', 'Arroz y pollo veg', 'Tomate';
+EXEC ingresoIngredienteComida 200, 'gramos', 'Arroz y pollo veg', 'Pollo';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Arroz y pollo veg', 'Espárragos';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Arroz y pollo veg', 'Pimiento';
+EXEC ingresoIngredienteComida 100, 'gramos', 'Ensalada pollo veg', 'Cebolla';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Ensalada pollo veg', 'Pollo';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Ensalada pollo veg', 'Garbanzos';
+EXEC ingresoIngredienteComida 20, 'gramos', 'Ensalada pollo veg', 'Nueces';
+EXEC ingresoIngredienteComida 100, 'gramos', 'Pollo al horno', 'Pollo';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Pollo al horno', 'Zanahoria';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Pollo al horno', 'Cebolla';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Pollo al horno', 'Tomate';
+EXEC ingresoIngredienteComida 100, 'gramos', 'Pollo al horno', 'Lentejas';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Pasta con salsa po', 'Pollo';
+EXEC ingresoIngredienteComida 20, 'gramos', 'Pasta con salsa po', 'Tomate';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Pasta con salsa po', 'Cebolla';
+EXEC ingresoIngredienteComida 100, 'gramos', 'Hamburguesa', 'Tomate';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Huevo';
+EXEC ingresoIngredienteComida 20, 'gramos', 'Hamburguesa', 'Pimiento';
+EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Pollo';
+
+
+
 
 --Ingreso de datos en la tabla ReporteIncidente
-EXEC ingresoReporteIncidente 'Incidente 1', '123456789', '987654321', '111111111'
-EXEC ingresoReporteIncidente 'Incidente 2', '123456789', '987654321', '222222222'
-EXEC ingresoReporteIncidente 'Incidente 3', '123456789', '987654321', '333333333'
-EXEC ingresoReporteIncidente 'Incidente 4', '123456789', '987654321', '444444444'
-EXEC ingresoReporteIncidente 'Incidente 5', '123456789', '987654321', '555555555'
-EXEC ingresoReporteIncidente 'Incidente 6', '123456789', '987654321', '666666666'
-EXEC ingresoReporteIncidente 'Incidente 7', '123456789', '987654321', '777777777'
-EXEC ingresoReporteIncidente 'Incidente 8', '123456789', '987654321', '888888888'
-EXEC ingresoReporteIncidente 'Incidente 9', '123456789', '987654321', '999999999'
-EXEC ingresoReporteIncidente 'Incidente 10', '123456789', '987654321', '000000000'
-EXEC ingresoReporteIncidente 'Incidente 11', '123456789', '987654321', '121212121'
-EXEC ingresoReporteIncidente 'Incidente 12', '123456789', '987654321', '232323232'
-EXEC ingresoReporteIncidente 'Incidente 13', '123456789', '987654321', '343434343'
-EXEC ingresoReporteIncidente 'Incidente 14', '123456789', '987654321', '454545454'
-EXEC ingresoReporteIncidente 'Incidente 15', '123456789', '987654321', '565656565'
-EXEC ingresoReporteIncidente 'Incidente 16', '123456789', '987654321', '676767676'
-EXEC ingresoReporteIncidente 'Incidente 17', '123456789', '987654321', '787878787'
-EXEC ingresoReporteIncidente 'Incidente 18', '123456789', '987654321', '898989898'
-EXEC ingresoReporteIncidente 'Incidente 19', '123456789', '987654321', '909090909'
-EXEC ingresoReporteIncidente 'Incidente 20', '123456789', '987654321', '101010101'
+EXEC ingresoReporteIncidente 'Incidente 1', '1000123456', '1104567908', '1104491862'
+EXEC ingresoReporteIncidente 'Incidente 2', '0109012345', '1104567907', '1758326503'
+EXEC ingresoReporteIncidente 'Incidente 3', '1008901234', '1104567906', '0923081847'
+EXEC ingresoReporteIncidente 'Incidente 4', '1000052132', '1104567905', '0911276548'
+EXEC ingresoReporteIncidente 'Incidente 5', '1707890123', '1104567904', '1705682925'
+EXEC ingresoReporteIncidente 'Incidente 6', '1106789016', '1104567903', '1301167859'
+EXEC ingresoReporteIncidente 'Incidente 7', '1105678904', '1104567902', '1721694285'
+EXEC ingresoReporteIncidente 'Incidente 8', '1002858874', '1104567901', '1705862756'
+EXEC ingresoReporteIncidente 'Incidente 9', '1102345679', '1104567900', '1741643297'
+EXEC ingresoReporteIncidente 'Incidente 10', '1101234568', '1104567899', '0400609954'
+EXEC ingresoReporteIncidente 'Incidente 11', '1100123456', '1104567898', '0412864712'
+EXEC ingresoReporteIncidente 'Incidente 12', '1109012345', '1002858866', '1708071024'
+EXEC ingresoReporteIncidente 'Incidente 13', '1108901234', '1104567896', '0913876254'
+EXEC ingresoReporteIncidente 'Incidente 14', '1107890123', '1004567894', '1209567834'
+EXEC ingresoReporteIncidente 'Incidente 15', '1106789012', '1704567893', '1203567890'
 
+--Ingreso de datos en la tabla PlanNutricional
+EXEC ingresoPlanNutricional 'Registro1', 'Plan1', 3, 'Comer más proteínas y menos carbohidratos', 'Nueces, mariscos', '2023-05-14', '2023-06-14';
+EXEC ingresoPlanNutricional 'Registro2', 'Plan2', 4, 'Comer más frutas y verduras', 'Lácteos', '2023-05-15', '2023-06-15';
+EXEC ingresoPlanNutricional 'Registro3', 'Plan3', 2, 'Reducir el consumo de azúcar', 'Gluten', '2023-05-16', '2023-06-16';
+EXEC ingresoPlanNutricional 'Registro4', 'Plan4', 5, 'Aumentar la ingesta de fibra', 'Huevos', '2023-05-17', '2023-06-17';
+EXEC ingresoPlanNutricional 'Registro5', 'Plan5', 3, 'Beber más agua', 'Soja', '2023-05-18', '2023-06-18';
+EXEC ingresoPlanNutricional 'Registro6', 'Plan6', 4, 'Evitar alimentos procesados', 'Cacahuetes', '2023-05-19', '2023-06-19';
+EXEC ingresoPlanNutricional 'Registro7', 'Plan7', 2, 'Comer menos grasas saturadas', 'Pescado', '2023-05-20', '2023-06-20';
+EXEC ingresoPlanNutricional 'Registro8', 'Plan8', 5, 'Incluir más alimentos ricos en omega-3', 'Trigo', '2023-05-21', '2023-06-21';
+EXEC ingresoPlanNutricional 'Registro9', 'Plan9', 3, 'Reducir el consumo de sal', 'Frutos secos', '2023-05-22', '2023-06-22';
+EXEC ingresoPlanNutricional 'Registro10', 'Plan10', 4, 'Aumentar la ingesta de calcio', 'Lácteos', '2023-05-23', '2023-06-23';
+EXEC ingresoPlanNutricional 'Registro11', 'Plan11', 2, 'Comer más alimentos ricos en hierro', 'Mariscos', '2023-05-24', '2023-06-24';
+EXEC ingresoPlanNutricional 'Registro12', 'Plan12', 5, 'Incluir más alimentos ricos en vitamina C', 'Cítricos', '2023-05-25', '2023-06-25';
+EXEC ingresoPlanNutricional 'Registro13', 'Plan13', 3, 'Aumentar la ingesta de proteínas magras', 'Carne roja', '2023-05-26', '2023-06-26';
+EXEC ingresoPlanNutricional 'Registro14', 'Plan14', 4, 'Comer más alimentos ricos en antioxidantes', 'Bayas', '2023-05-27', '2023-06-27';
+EXEC ingresoPlanNutricional 'Registro15', 'Plan15', 2, 'Reducir el consumo de bebidas azucaradas', 'Ninguna', '2023-05-28', '2023-06-28';
+EXEC ingresoPlanNutricional 'Registro16', 'Plan16', 5, 'Incluir más alimentos ricos en potasio', 'Plátanos', '2023-05-29', '2023-06-29';
+EXEC ingresoPlanNutricional 'Registro17', 'Plan17', 3, 'Aumentar la ingesta de alimentos ricos en vitamina D', 'Pescado', '2023-05-30', '2023-06-30';
+EXEC ingresoPlanNutricional 'Registro18', 'Plan18', 4, 'Comer más alimentos ricos en vitamina B12', 'Huevos', '2023-05-31', '2023-06-31';
+EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-06-01', '2023-07-01';
+EXEC ingresoPlanNutricional 'Registro20', 'Plan20', 5, 'Aumentar la ingesta de alimentos ricos en magnesio', 'Espinacas', '2023-06-02', '2023-07-02';
+
+--Ingreso de datos en la tabla Menu
+EXEC ingresoMenu 'Menu1', 'Comida1', 'Plan1', 'Dia', 'Informacion adicional 1', 500.0;
+EXEC ingresoMenu 'Menu2', 'Comida2', 'Plan1', 'Medio dia', 'Informacion adicional 2', 600.0;
+EXEC ingresoMenu 'Menu3', 'Comida3', 'Plan1', 'Tarde', 'Informacion adicional 3', 450.0;
+EXEC ingresoMenu 'Menu4', 'Comida4', 'Plan1', 'Media tarde', 'Informacion adicional 4', 550.0;
+EXEC ingresoMenu 'Menu5', 'Comida5', 'Plan1', 'Noche', 'Informacion adicional 5', 700.0;
+EXEC ingresoMenu 'Menu6', 'Comida1', 'Plan2', 'Dia', 'Informacion adicional 6', 520.0;
+EXEC ingresoMenu 'Menu7', 'Comida2', 'Plan2', 'Medio dia', 'Informacion adicional 7', 610.0;
+EXEC ingresoMenu 'Menu8', 'Comida3', 'Plan2', 'Tarde', 'Informacion adicional 8', 460.0;
+EXEC ingresoMenu 'Menu9', 'Comida4', 'Plan2', 'Media tarde', 'Informacion adicional 9', 560.0;
+EXEC ingresoMenu 'Menu10', 'Comida5', 'Plan2', 'Noche', 'Informacion adicional 10', 710.0;
+EXEC ingresoMenu 'Menu11', 'Comida1', 'Plan3', 'Dia', 'Informacion adicional 11', 530.0;
+EXEC ingresoMenu 'Menu12', 'Comida2', 'Plan3', 'Medio dia', 'Informacion adicional 12', 620.0;
+EXEC ingresoMenu 'Menu13', 'Comida3', 'Plan3', 'Tarde', 'Informacion adicional 13', 470.0;
+EXEC ingresoMenu 'Menu14', 'Comida4', 'Plan3', 'Media tarde', 'Informacion adicional 14', 570.0;
+EXEC ingresoMenu 'Menu15', 'Comida5', 'Plan3', 'Noche', 'Informacion adicional 15', 720.0;
+EXEC ingresoMenu 'Menu16', 'Comida1', 'Plan4', 'Dia', 'Informacion adicional 16', 540.0;
+EXEC ingresoMenu 'Menu17', 'Comida2', 'Plan4', 'Medio dia', 'Informacion adicional 17', 630.0;
+EXEC ingresoMenu 'Menu18', 'Comida3', 'Plan4', 'Tarde', 'Informacion adicional 18', 480.0;
+EXEC ingresoMenu 'Menu19', 'Comida4', 'Plan4', 'Media tarde', 'Informacion adicional 19', 580.0;
+EXEC ingresoMenu 'Menu20', 'Comida5', 'Plan4', 'Noche', 'Informacion adicional 20', 730.0;

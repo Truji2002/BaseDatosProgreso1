@@ -303,7 +303,7 @@ idEntrenador TINYINT NULL,
 idCliente SMALLINT NULL,
 nombre VARCHAR (20) NOT NULL,
 fechaCita SMALLDATETIME NOT NULL,
-tipo NVARCHAR(15) NOT NULL,
+tipo NVARCHAR(20) NOT NULL,
 descripcion NVARCHAR (25) NULL,
 asistencia BIT NOT NULL DEFAULT 0,
 fechaAsistencia SMALLDATETIME NOT NULL,
@@ -326,6 +326,7 @@ END
 CREATE TABLE RegistroMedico(
 idRegistroMedico SMALLINT IDENTITY (1,1),
 idCita SMALLINT NOT NULL,
+nombre VARCHAR (20) NOT NULL,
 fechaRegistro DATE NOT NULL DEFAULT GETDATE(),
 tipoSangre VARCHAR(3) NOT NULL,
 estadoSalud NVARCHAR(10) NOT NULL,
@@ -340,7 +341,7 @@ alergias NVARCHAR(100) NULL,
 objetivoCliente NVARCHAR(150) NOT NULL,
 CONSTRAINT PK_RegistroMedico PRIMARY KEY (idRegistroMedico),
 CONSTRAINT FK_Cita FOREIGN KEY (idCita) REFERENCES Cita (idCita),
-CONSTRAINT CK_FechaRegistro CHECK (fechaRegistro=GETDATE()),
+--CONSTRAINT CK_FechaRegistro CHECK (fechaRegistro>=GETDATE()),
 CONSTRAINT CK_TipoSangre CHECK (tipoSangre IN ('O+','O-','A+','A-','B+','B-','AB+','AB-')),
 CONSTRAINT CK_EstadoSalud CHECK (estadoSalud IN ('Excelente','Bueno','Crítico')),
 CONSTRAINT CK_PesoActual CHECK(pesoActual>0 AND pesoActual<400),
@@ -360,6 +361,7 @@ END
 CREATE TABLE PlanNutricional(
 idPlanNutricional SMALLINT IDENTITY (1,1),
 idRegistroMedico SMALLINT NOT NULL,
+nombre varchar(20) NOT NULL,
 cantidadComidasDia TINYINT NOT NULL,
 indicacionesGenerales NVARCHAR(300) NULL,
 alergiasConsideradas NVARCHAR (100) NULL,
@@ -367,6 +369,7 @@ fechaInicio DATE NOT NULL,
 fechaFin DATE NOT NULL,
 CONSTRAINT PK_PlanNutricional PRIMARY KEY (idPlanNutricional),
 CONSTRAINT FK_RegistroMedico FOREIGN KEY (idRegistroMedico) REFERENCES RegistroMedico (idRegistroMedico),
+CONSTRAINT UQ_NOMBREPN UNIQUE (nombre),
 CONSTRAINT CK_cantidadComidasDia CHECK (cantidadComidasDia>0 AND cantidadComidasDia <=5),
 CONSTRAINT CK_fechaInicioP CHECK (fechaInicio>=GETDATE()),
 CONSTRAINT CK_fechaFinP CHECK (fechaFin>FechaInicio),
@@ -405,12 +408,14 @@ CREATE TABLE Menu (
 idMenu SMALLINT IDENTITY (1,1),
 idComida SMALLINT NOT NULL,
 idPlanNutricional SMALLINT NOT NULL,
+nombre varchar(20) NOT NULL,
 horarioMenu varchar(10) NOT NULL,
 informacionAdicional NVARCHAR (300) NULL,
 cantidadTotalCalorias DECIMAL (6,1) NOT NULL,
 CONSTRAINT PK_Menu PRIMARY KEY (idMenu),
 CONSTRAINT FK_ComidaM FOREIGN KEY (idComida) REFERENCES Comida (idComida),
 CONSTRAINT FK_PlanNutricional FOREIGN KEY (idPlanNutricional) REFERENCES PlanNutricional (idPlanNutricional),
+CONSTRAINT UQ_NOMBREM UNIQUE (nombre),
 CONSTRAINT CK_CantidadTotalCalorias CHECK (cantidadTotalCalorias>0 AND cantidadTotalCalorias<=99999),
 CONSTRAINT CK_horarioMenu CHECK (horarioMenu IN ('Dia','Medio dia','Tarde','Media tarde','Noche'))
 );
@@ -459,6 +464,12 @@ CONSTRAINT CK_Cantidad CHECK (cantidad>0),
 CONSTRAINT CK_Unidad CHECK (unidad IN ('gramos','kilos','onzas','cucharadas','litros','libras','cucharaditas'))
 );
 
+--Creación de la tabla ReporteIncidente.
+--Antes se valida si existe la tabla y se la elimina de la base de datos, para posteriormente crearla.
+IF EXISTS(SELECT name FROM sys.tables WHERE name = 'ReporteIncidente')
+BEGIN
+    DROP TABLE ReporteIncidente;
+END
 CREATE TABLE ReporteIncidente (
 idReporteIncidente SMALLINT IDENTITY (1,1),
 idCliente SMALLINT NOT NULL,
@@ -470,7 +481,7 @@ CONSTRAINT PK_ReporteIncidente PRIMARY KEY (idReporteIncidente),
 CONSTRAINT FK_ClienteRepor FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente),
 CONSTRAINT FK_EntrenadorRepor FOREIGN KEY (idEntrenador) REFERENCES Entrenador (idEntrenador),
 CONSTRAINT FK_PersonalSaludRepor FOREIGN KEY (idPersonalSalud) REFERENCES PersonalSalud (idPersonalSalud),
-CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
+--CONSTRAINT CK_fechaIncidente CHECK (fechaIncidente=GETDATE())
 );
 
 
@@ -532,8 +543,8 @@ AS
 
 
  --Se realiza la inserción de la tupla en la tabla Resultado.
-		INSERT INTO PlanEntrenamiento(idCliente,idEntrenador,nombre,intensidad,objetivoPlan,fechaInicio,fechaCambio,asistencia)
-		VALUES(@idCliente,@idEntrenador,@nombre,@intensidad,@objetivoPlan,@fechaInicio,@fechaCambio,@asistencia)
+		INSERT INTO PlanEntrenamiento(idCliente,idEntrenador,nombre,intensidad,objetivoPlan,fechaInicio,fechaCambio,monitoreo,asistencia)
+		VALUES(@idCliente,@idEntrenador,@nombre,@intensidad,@objetivoPlan,@fechaInicio,@fechaCambio,@monitoreo,@asistencia)
 	END
  END
 GO
@@ -604,7 +615,7 @@ CREATE PROCEDURE ingresoCitaCliente
     --Se declaran los argumentos que recibe el procedimiento almacenado
     @nombre VARCHAR (20),
 	@fechaCita SMALLDATETIME,
-	@tipo NVARCHAR(15),
+	@tipo NVARCHAR(20),
 	@descripcion NVARCHAR (25),
 	@asistencia BIT,
 	@fechaAsistencia SMALLDATETIME,
@@ -660,7 +671,7 @@ CREATE PROCEDURE ingresoCitaEntrenador
     --Se declaran los argumentos que recibe el procedimiento almacenado
     @nombre VARCHAR (20),
 	@fechaCita SMALLDATETIME,
-	@tipo NVARCHAR(15),
+	@tipo NVARCHAR(20),
 	@descripcion NVARCHAR (25),
 	@asistencia BIT,
 	@fechaAsistencia SMALLDATETIME,
@@ -793,7 +804,7 @@ AS
  
 
             SET @idComida = (SELECT idComida FROM Comida WHERE nombre = @nombreC);
-            SET @idIngrediente = (SELECT @idIngrediente FROM Ingrediente WHERE nombre = @nombreI);
+            SET @idIngrediente = (SELECT idIngrediente FROM Ingrediente WHERE nombre = @nombreI);
 
             --Se realiza la inserción de la tupla en la tabla Cita.
             INSERT INTO IngredienteComida(idComida,idIngrediente,cantidad,unidad) 
@@ -856,6 +867,98 @@ AS
        		END
     END
 GO
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoPlanNutricional')
+BEGIN
+    DROP PROCEDURE ingresoPlanNutricional
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE ingresoPlanNutricional
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+	
+	@nombreRM VARCHAR (20),
+	@nombre VARCHAR (20),
+	@cantidadComidasDia TINYINT,
+	@indicacionesGenerales NVARCHAR(300),
+	@alergiasConsideradas NVARCHAR(100),
+	@fechaInicio DATE,
+	@fechaFin DATE
+
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM RegistroMedico WHERE nombre = @nombreRM) = 0
+    BEGIN
+        RAISERROR('El registro medico no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud. 
+            DECLARE @idRegistroMedico SMALLINT
+
+            SET @idRegistroMedico = (SELECT idRegistroMedico FROM RegistroMedico WHERE nombre = @nombreRM);
+
+            --Se realiza la inserción de la tupla en la tabla Cita.
+            INSERT INTO PlanNutricional(idRegistroMedico,nombre,cantidadComidasDia,indicacionesGenerales, alergiasConsideradas, fechaInicio, fechaFin) 
+            VALUES(@idRegistroMedico,@nombre,@cantidadComidasDia,@indicacionesGenerales,@alergiasConsideradas, @fechaInicio, @fechaFin)
+        
+    END
+GO
+
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ingresoMenu')
+BEGIN
+    DROP PROCEDURE ingresoMenu
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ingresar un registro a la tabla Cita, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE ingresoMenu
+    --Se declaran los argumentos que recibe el procedimiento almacenado
+	@nombre VARCHAR (20),
+	@nombreC VARCHAR (20),
+	@nombrePN VARCHAR (20),
+	@horarioMenu VARCHAR (10),
+	@informacionAdicional NVARCHAR(300),
+	@cantidadTotalCalorias DECIMAL (6,1)
+
+AS
+    --Se verifica si existe el cliente con esa cédula que se está intentando ingresar.
+    IF (SELECT COUNT(*) FROM Comida WHERE nombre = @nombreC) = 0
+    BEGIN
+        RAISERROR('La comida no existe.',16,10)
+    END
+    ELSE
+    BEGIN
+        --Se verifica si existe el personal de salud con esa cédula que se está intentando ingresar. 
+        IF (SELECT COUNT(*) FROM PlanNutricional WHERE nombre = @nombrePN) = 0
+        BEGIN
+            RAISERROR('El plan nutricional no existe.',16,10)
+        END
+        ELSE
+        BEGIN
+            --Si el cliente y el entrenador existen, se obtiene el id del paciente y el id del personal de salud. 
+            DECLARE @idComida SMALLINT
+            DECLARE @idPlanNutricional SMALLINT
+
+ 
+
+            SET @idComida = (SELECT idComida FROM Comida WHERE nombre = @nombreC);
+            SET @idPlanNutricional = (SELECT idPlanNutricional FROM PlanNutricional WHERE nombre = @nombrePN);
+
+            --Se realiza la inserción de la tupla en la tabla Cita.
+            INSERT INTO Menu(idComida,idPlanNutricional ,nombre,horarioMenu,informacionAdicional,cantidadTotalCalorias) 
+            VALUES(@idComida,@idPlanNutricional,@nombre,@horarioMenu,@informacionAdicional,@cantidadTotalCalorias)
+        END
+    END
+GO
+
+
+
 
 --Trigger Alergias
 
