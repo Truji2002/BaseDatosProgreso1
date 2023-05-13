@@ -125,3 +125,81 @@ BEGIN
 			PRINT('Asistencia registrada correctamente')
 		END
 END
+
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'rutinaCliente')
+BEGIN
+    DROP PROCEDURE rutinaCliente
+END
+GO
+--Creación de un Procedimiento Almacenado que permita isualizar la rutina actual del cliente, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE rutinaCliente (@cedulaCliente nvarchar(12))
+AS
+	--Validacino de datos segun la cedula
+	if ((SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedulaCliente) = 0)
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	--Declarar las variables
+
+	DECLARE @idCliente AS INT
+	DECLARE @nombresCliente AS NVARCHAR(100)
+	DECLARE @apellidosClientes AS NVARCHAR(100)
+	DECLARE @fechaInicioPlanEntenamiento AS DATE
+
+	--Inicializacion de las variables
+
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedulaCliente)
+	SET @nombresCliente = (SELECT TOP 1 nombres FROM Cliente WHERE idCliente = @idCliente)
+	SET @apellidosClientes = (SELECT TOP 1 apellidos FROM Cliente WHERE idCliente = @idCliente)
+	SET @fechaInicioPlanEntenamiento = (SELECT TOP 1 fechaInicio FROM PlanEntrenamiento P WHERE P.idCliente = @idCliente)
+
+	--Datos generales del cliente
+
+	PRINT('*************Life Fitness Gym*************')
+	PRINT('Cliente: ' + @nombresCliente + ' ' + @apellidosClientes)
+	PRINT('Fecha de inicio del plan de entrenamiento: ' + CONVERT(NVARCHAR(10), @fechaInicioPlanEntenamiento, 120))
+	PRINT('********************************')
+	
+	--Se declaran las variables para el cursor
+
+	DECLARE @idRutina SMALLINT, 
+		@nombreEjercicio NVARCHAR(30),
+		@descripcionEjercicio NVARCHAR(120), 
+		@grupoMuscular NVARCHAR(20),
+		@cantidadRepeticiones TINYINT,
+		@tiempoDescanso DECIMAL (3,1),
+		@cantidadSeries TINYINT,
+		@diaSemana VARCHAR(9)
+	
+	/Se declara y se usa el cursor/
+	DECLARE cursorRutina CURSOR FOR 
+		SELECT Rut.idRutina, Rut.nombreEjercicio, Rut.descripcionEjercicio, Rut.grupoMuscular, Rut.cantidadRepeticiones, Rut.tiempoDescanso, Rut.cantidadSeries, Rut.diaSemana
+		FROM Rutina Rut
+		WHERE idPlanEntrenamiento = (SELECT TOP 1 idPlanEntrenamiento FROM PlanEntrenamiento WHERE idCliente = @idCliente ORDER BY idPlanEntrenamiento DESC)
+	OPEN cursorRutina
+
+	FETCH NEXT FROM cursorRutina INTO @idRutina, @nombreEjercicio, @descripcionEjercicio, @grupoMuscular, @cantidadRepeticiones, @tiempoDescanso, @cantidadSeries, @diaSemana
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		PRINT('')
+		PRINT('***Dia de la semana: ' + @diaSemana + ' *****')
+		PRINT('Grupo Muscular: ' + @grupoMuscular)
+		PRINT('Nombre del ejercicio: ' + @nombreEjercicio)
+		PRINT('Cant. Series: ' + CONVERT(NVARCHAR(10), @cantidadSeries, 120))
+		PRINT('Cant. Repeticiones: ' + CONVERT(NVARCHAR(10), @cantidadRepeticiones, 120))
+		PRINT('Descanso entre series: ' + CONVERT(NVARCHAR(10), @tiempoDescanso, 120))
+		PRINT('')
+		
+		FETCH NEXT FROM cursorRutina INTO @idRutina, @nombreEjercicio, @descripcionEjercicio, @grupoMuscular, @cantidadRepeticiones, @tiempoDescanso, @cantidadSeries, @diaSemana
+	END
+
+	CLOSE cursorRutina
+	DEALLOCATE cursorRutina
+GO

@@ -492,6 +492,482 @@ CONSTRAINT FK_PersonalSaludRepor FOREIGN KEY (idPersonalSalud) REFERENCES Person
 */
 
 /*
+************
+-- Trigger para validar que: Los nutricionistas, serán los únicos que puedan emitir planes de alimentación para
+los usuarios y el personal.
+************
+*/
+--Verificar si existe el Trigger
+/*
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'tr_ValidarRegistroMedicoNutricionista')
+BEGIN
+    DROP TRIGGER tr_ValidarRegistroMedicoNutricionista
+END
+GO
+
+CREATE TRIGGER tr_ValidarRegistroMedicoNutricionista
+ON PlanNutricional
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        INNER JOIN RegistroMedico rm ON i.idRegistroMedico = rm.idRegistroMedico
+        INNER JOIN Cita c ON rm.idCita = c.idCita
+        INNER JOIN PersonalSalud ps ON c.idPersonalSalud = ps.idPersonalSalud
+        WHERE ps.tipo = 'Nutricionista'
+    )
+    BEGIN
+        PRINT 'El registro médico pertenece a un nutricionista.'
+    END
+    ELSE
+    BEGIN
+        RAISERROR('Solo un nutricionista puede crear el plan nutricional.',16,10)
+        ROLLBACK TRANSACTION
+    END
+END*/
+
+/*
+
+************
+
+-- Trigger para validar que: Si ocurre un accidente dentro de las instalaciones el médico es el único que puede crear un reporte del caso.
+
+************
+
+*/
+
+--Verificar si existe el Trigger
+ 
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'tr_ValidarPersonalSaludDoctor')
+BEGIN
+    DROP TRIGGER tr_ValidarPersonalSaludDoctor
+
+END
+
+GO
+ 
+CREATE TRIGGER tr_ValidarPersonalSaludDoctor
+
+ON ReporteIncidente
+
+AFTER INSERT, UPDATE
+
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        INNER JOIN PersonalSalud ps ON i.idPersonalSalud = ps.idPersonalSalud
+        WHERE ps.tipo = 'Doctor'
+    )
+
+    BEGIN
+        PRINT 'El personal de salud es un doctor.'
+    END
+    ELSE
+    BEGIN
+       RAISERROR('Solo un doctor puede atender un incidente.',16,10)
+        ROLLBACK TRANSACTION
+    END
+END
+
+
+/*
+************
+-- Trigger para validar que: Los planes de nutrición creados por los nutricionistas deben tener tres comidas al
+día como mínimo y cinco comidas al día como máximo para los miembros.
+************
+*/
+--Verificar si existe el Trigger 
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'trg_InsertarPlanNutricional')
+BEGIN
+    DROP TRIGGER trg_InsertarPlanNutricional
+END
+GO
+
+CREATE TRIGGER trg_InsertarPlanNutricional
+ON Cliente
+AFTER INSERT
+AS
+BEGIN
+DECLARE @nombrePlan VARCHAR(20)
+SET @nombrePlan = 'Plan de alimentación'
+DECLARE @contador INT
+SET @contador = 1
+WHILE EXISTS (SELECT * FROM PlanNutricional WHERE nombre = @nombrePlan)
+BEGIN
+SET @nombrePlan = 'Plan de alimentación ' + CAST(@contador AS VARCHAR(10))
+SET @contador = @contador + 1
+END
+INSERT INTO PlanNutricional (idRegistroMedico, nombre, cantidadComidasDia, indicacionesGenerales, alergiasConsideradas, fechaInicio, fechaFin)
+SELECT r.idRegistroMedico, @nombrePlan, 5, 'Indicaciones generales', NULL, GETDATE(), DATEADD(month, 1, GETDATE())
+FROM RegistroMedico r
+WHERE r.idRegistroMedico IN (SELECT MAX(idRegistroMedico) FROM RegistroMedico)
+END
+
+
+
+/*
+************
+-- Stored Procedura para validar que el plan de nutrición debe actualizase cada mes para los empleados y clientes. Dicha información que define si se cambia el
+plan de alimentación abarca el: peso, altura, índice de masa corporal, porcentaje
+de grasa corporal.
+************
+*/
+
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'ActualizarPlanNutricional')
+BEGIN
+    DROP PROCEDURE ActualizarPlanNutricional
+END
+GO
+
+CREATE PROCEDURE ActualizarPlanNutricional
+@idRegistroMedico SMALLINT,
+@fechaActual DATE
+AS
+BEGIN
+DECLARE @idPlanNutricional SMALLINT
+DECLARE @fechaFin DATE
+DECLARE @cantidadComidasDia TINYINT
+DECLARE @indicacionesGenerales NVARCHAR(300)
+DECLARE @alergiasConsideradas NVARCHAR(100)
+DECLARE @pesoActual DECIMAL(5,2)
+DECLARE @alturaActual DECIMAL(3,2)
+DECLARE @indiceGrasaCorporal DECIMAL (3,1)
+-- Obtener información del registro médico
+SELECT @pesoActual = pesoActual, @alturaActual = alturaActual, @indiceGrasaCorporal = indiceGrasaCorporal
+FROM RegistroMedico
+WHERE idRegistroMedico = @idRegistroMedico
+
+ 
+
+-- Verificar si se cumplen las condiciones para actualizar el plan de nutrición
+IF DATEDIFF(month, @fechaFin, @fechaActual) >= 1 OR @fechaActual >= @fechaFin
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM PlanNutricional
+        WHERE idRegistroMedico = @idRegistroMedico
+        AND fechaFin >= @fechaActual
+    )
+    BEGIN
+        -- Obtener información del plan nutricional actual
+        SELECT TOP 1 @idPlanNutricional = idPlanNutricional, @cantidadComidasDia = cantidadComidasDia, @indicacionesGenerales = indicacionesGenerales, @alergiasConsideradas = alergiasConsideradas
+        FROM PlanNutricional
+        WHERE idRegistroMedico = @idRegistroMedico
+        AND fechaFin >= @fechaActual
+        ORDER BY fechaInicio DESC
+
+ 
+
+        -- Verificar si se cumplen las condiciones para actualizar el plan de nutrición
+        IF @pesoActual IS NOT NULL AND @alturaActual IS NOT NULL AND @indiceGrasaCorporal IS NOT NULL
+        BEGIN
+            -- Actualizar el plan de nutrición con la nueva información
+            UPDATE PlanNutricional
+            SET cantidadComidasDia = @cantidadComidasDia,
+                indicacionesGenerales = @indicacionesGenerales,
+                alergiasConsideradas = @alergiasConsideradas
+            WHERE idPlanNutricional = @idPlanNutricional
+        END
+    END
+END
+END
+
+/*
+************
+-- Trigger para validar que Cada vez que se actualice el plan alimenticio de una persona, el anterior plan
+deberá parar a un estado de anterior y asignarle la fecha de fin de forma
+automática.
+
+ 
+
+************
+*/
+
+ IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'tr_ActualizarFechaFin')
+BEGIN
+    DROP PROCEDURE tr_ActualizarFechaFin
+END
+GO
+
+CREATE TRIGGER tr_ActualizarFechaFin
+ON PlanNutricional
+AFTER INSERT
+AS
+BEGIN
+DECLARE @idCliente SMALLINT, @idEntrenador TINYINT, @fechaActual DATE, @idRegistroMedico SMALLINT;
+SELECT @idRegistroMedico = i.idRegistroMedico, @fechaActual = GETDATE()
+FROM inserted i;
+SELECT @idCliente = c.idCliente, @idEntrenador = c.idEntrenador
+FROM Cita c
+WHERE c.idCita = (SELECT idCita FROM RegistroMedico WHERE idRegistroMedico = @idRegistroMedico);
+
+ 
+
+IF EXISTS (
+    SELECT 1
+    FROM PlanNutricional pn
+    INNER JOIN RegistroMedico rm ON pn.idRegistroMedico = rm.idRegistroMedico
+    INNER JOIN Cita c ON rm.idCita = c.idCita
+    WHERE (c.idCliente = @idCliente OR c.idEntrenador = @idEntrenador)
+    AND pn.fechaFin IS NULL
+    AND pn.idPlanNutricional <> (SELECT TOP 1 idPlanNutricional FROM inserted ORDER BY idPlanNutricional DESC)
+)
+BEGIN
+    UPDATE PlanNutricional
+    SET fechaFin = @fechaActual
+    WHERE idPlanNutricional IN (
+        SELECT pn.idPlanNutricional
+        FROM PlanNutricional pn
+        INNER JOIN RegistroMedico rm ON pn.idRegistroMedico = rm.idRegistroMedico
+        INNER JOIN Cita c ON rm.idCita = c.idCita
+        WHERE (c.idCliente = @idCliente OR c.idEntrenador = @idEntrenador)
+        AND pn.fechaFin IS NULL
+        AND pn.idPlanNutricional <> (SELECT TOP 1 idPlanNutricional FROM inserted ORDER BY idPlanNutricional DESC)
+    );
+END
+END
+
+
+
+/*
+
+************
+
+-- Trigger para validar que para el entrenamiento de cada grupo muscular, no se debe sobrepasar la cantidad
+
+de 10 ejercicios
+
+ 
+
+************
+
+*/
+
+ 
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'tr_LimiteRegistros')
+BEGIN
+    DROP TRIGGER tr_LimiteRegistros
+END
+GO
+
+
+CREATE TRIGGER tr_LimiteRegistros
+
+ON Rutina
+
+INSTEAD OF INSERT
+
+AS
+
+BEGIN
+
+    DECLARE @grupoMuscular NVARCHAR(20);
+
+    DECLARE @cantidadEjercicios INT;
+
+    SET @grupoMuscular = (SELECT grupoMuscular FROM inserted);
+
+    SELECT @cantidadEjercicios = COUNT(*) FROM Rutina WHERE grupoMuscular = @grupoMuscular;
+
+    IF (@cantidadEjercicios >= 10)
+
+    BEGIN
+
+        RAISERROR('No se pueden insertar más registros para este grupo muscular', 16, 1);
+
+        ROLLBACK TRANSACTION;
+
+    END
+
+    ELSE
+
+    BEGIN
+
+        INSERT INTO Rutina (idPlanEntrenamiento, nombreEjercicio, descripcionEjercicio, grupoMuscular, cantidadRepeticiones, tiempoDescanso, cantidadSeries, diaSemana, caloriasQuemadas)
+
+        SELECT idPlanEntrenamiento, nombreEjercicio, descripcionEjercicio, grupoMuscular, cantidadRepeticiones, tiempoDescanso, cantidadSeries, diaSemana, caloriasQuemadas
+
+        FROM inserted;
+
+    END
+
+END;
+
+ 
+
+ 
+
+/*
+
+************
+
+-- Trigger para validar que Cada vez que se cambie el plan de entrenamiento de un miembro, el antiguo plan
+
+deberá pasar a un estado de anterior y colocar automáticamente la fecha en la que
+
+termina.
+
+ 
+
+
+
+***
+
+*/
+
+ IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'ActualizarFechaCambio')
+BEGIN
+    DROP TRIGGER ActualizarFechaCambio
+END
+GO
+
+CREATE TRIGGER ActualizarFechaCambio
+ON PlanEntrenamiento
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @idCliente SMALLINT;
+    DECLARE @fechaActual DATE;
+    SELECT @idCliente = idCliente, @fechaActual = GETDATE()
+    FROM inserted;
+    UPDATE PlanEntrenamiento
+    SET fechaCambio = @fechaActual
+    WHERE idCliente = @idCliente
+    AND idPlanEntrenamiento <> (SELECT TOP 1 idPlanEntrenamiento
+                                FROM PlanEntrenamiento
+                                WHERE idCliente = @idCliente
+                                ORDER BY fechaInicio DESC);
+END;
+
+
+
+/*
+************
+-- Funcion  para validar que se podrá entrenar 3 grupos musculares como máximo por día.
+automática. 
+************
+*/
+/*
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[fn_CantidadGruposMuscularesPorDia]') AND type IN (N'FN', N'IF', N'TF', N'FS', N'FT'))
+    DROP FUNCTION [dbo].[fn_CantidadGruposMuscularesPorDia];
+GO
+
+CREATE FUNCTION [dbo].[fn_CantidadGruposMuscularesPorDia] (@idPlanEntrenamiento SMALLINT, @diaSemana VARCHAR(9))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @cantidadGruposMusculares INT;
+    SELECT @cantidadGruposMusculares = COUNT(DISTINCT grupoMuscular)
+    FROM Rutina
+    WHERE idPlanEntrenamiento = @idPlanEntrenamiento AND diaSemana = @diaSemana;
+    RETURN @cantidadGruposMusculares;
+END;
+GO
+
+ALTER TABLE Rutina ADD CONSTRAINT CK_GruposMuscularesPorDia CHECK ( -- Verificar que la cantidad de grupos musculares distintos por día no sea mayor a 3 
+	dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Lunes') <= 3 
+	AND dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Martes') <= 3 
+	AND dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Miercoles') <= 3 
+	AND dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Jueves') <= 3 
+	AND dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Viernes') <= 3 
+	AND dbo.fn_CantidadGruposMuscularesPorDia(idPlanEntrenamiento, 'Sabado') <= 3 );*/
+
+
+
+/*
+************
+-- Funcion  para validar el tiempo muerto de 20 minutos o más. 
+************
+*/
+/*
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[fn_TiempoTotalDescanso]') AND type IN (N'FN', N'IF', N'TF', N'FS', N'FT'))
+    DROP FUNCTION [dbo].[fn_TiempoTotalDescanso];
+GO
+CREATE FUNCTION [dbo].[fn_TiempoTotalDescanso] ()
+RETURNS INT
+AS
+BEGIN
+    DECLARE @tiempoTotal INT;
+    -- Calcular el tiempo total de descanso
+    SELECT @tiempoTotal = SUM(tiempoDescanso)
+    FROM Rutina;
+    -- Devolver el tiempo total de descanso en segundos
+    RETURN @tiempoTotal;
+END;
+GO
+ALTER TABLE Rutina
+ADD CONSTRAINT CK_TiempoMuerto CHECK (
+    -- Verificar que exista un tiempo muerto de 20 minutos
+    dbo.fn_TiempoTotalDescanso() >= 1200
+);*/
+
+
+/*
+************
+-- Función para validar que todos los entrenadores o clientes tengan planes nutricionales asignados.
+************
+*/
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[fn_VerificarPlanNutricional]') AND type IN (N'FN', N'IF', N'TF', N'FS', N'FT'))
+BEGIN
+    DROP FUNCTION [dbo].[fn_VerificarPlanNutricional];
+END
+GO
+CREATE FUNCTION [dbo].[fn_VerificarPlanNutricional] ()
+RETURNS NVARCHAR(100)
+AS
+BEGIN
+DECLARE @mensajeError NVARCHAR(100)
+SET @mensajeError = ''
+IF EXISTS (
+    SELECT c.idCliente
+    FROM Cliente c
+    LEFT JOIN Cita ci ON  c.idCliente= ci.idCliente
+    LEFT JOIN PersonalSalud ps ON ci.idPersonalSalud = ps.idPersonalSalud
+    WHERE ps.tipo = 'Nutricionista' AND ci.idCita IS NULL
+)
+BEGIN
+    SET @mensajeError = 'Hay clientes sin plan nutricional asignado.'
+END
+
+IF EXISTS (
+    SELECT e.idEntrenador
+    FROM Entrenador e
+    LEFT JOIN Cita c ON e.idEntrenador = c.idEntrenador
+    LEFT JOIN PersonalSalud ps ON c.idPersonalSalud = ps.idPersonalSalud
+    WHERE ps.tipo = 'Nutricionista' AND c.idCita IS NULL AND e.FechaSalida IS NULL
+)
+BEGIN
+    IF @mensajeError <> ''
+    BEGIN
+        SET @mensajeError = @mensajeError + ' '
+    END
+    SET @mensajeError = @mensajeError + 'Hay entrenadores sin planes asignados.'
+END
+RETURN @mensajeError
+END;
+GO
+
+DECLARE @mensajeError NVARCHAR(100)
+IF OBJECT_ID(N'[dbo].[fn_VerificarPlanNutricional]', N'FN') IS NOT NULL
+BEGIN
+    SET @mensajeError = dbo.fn_VerificarPlanNutricional()
+END
+IF @mensajeError <> ''
+BEGIN
+    RAISERROR(@mensajeError, 16, 1)
+END
+
+
+
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+/*
 **********************************
 -- Procedimiento almacenado que controla el ingreso de tuplas en la tabla Plan Entrenamiento
 **********************************
