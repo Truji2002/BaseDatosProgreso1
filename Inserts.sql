@@ -1,3 +1,7 @@
+
+USE master
+GO
+
 Use Gimnasio
 Go
 
@@ -295,25 +299,25 @@ EXEC ingresoCitaEntrenador 'Cita 19', '2023-08-20 14:00:00', 'Cita médica', 'Con
 
 
 --Ingreso de datos en la tabla RegistroMedico
-EXEC ingresoRegistroMedico 'O+', 'Excelente', 70.5, 1.75, 20.5, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Perder peso', 'Cita 1'
-EXEC ingresoRegistroMedico 'A-', 'Bueno', 65.2, 1.68, 18.2, NULL, NULL, 'Endomorfo', NULL, NULL, 'Ganar masa muscular', 'Cita 2'
-EXEC ingresoRegistroMedico 'B+', 'Crítico', 80.0, 1.80, 25.0, 'Fractura de tobillo', 'Diabetes tipo 2', 'Hectomorfo', 'Cirugía de apéndice', 'Polen', 'Mejorar condición física', 'Cita 3'
-EXEC ingresoRegistroMedico 'AB-', 'Bueno', 62.0, 1.60, 22.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Tonificar músculos', 'Cita 4'
-EXEC ingresoRegistroMedico 'O-', 'Excelente', 75.0, 1.85, 18.5, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar resistencia', 'Cita 5'
-EXEC ingresoRegistroMedico 'A+', 'Crítico', 90.0, 1.90, 30.0, 'Esguince de rodilla', 'Hipertensión', 'Endomorfo', 'Cirugía de hernia', 'Lactosa', 'Reducir estrés', 'Cita 6'
-EXEC ingresoRegistroMedico 'B-', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Hectomorfo', NULL, NULL, 'Mejorar flexibilidad', 'Cita 7'
-EXEC ingresoRegistroMedico 'AB+', 'Excelente', 80.0, 1.80, 25.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar masa muscular', 'Cita 8'
-EXEC ingresoRegistroMedico 'O+', 'Bueno', 65.0, 1.70, 22.0, 'Tendinitis', NULL, 'Endomorfo', NULL, NULL, 'Mejorar postura', 'Cita 9'
-EXEC ingresoRegistroMedico 'A-', 'Crítico', 75.0, 1.75, 28.0, 'Fractura de clavícula', 'Asma', 'Hectomorfo', 'Cirugía de nariz', 'Polvo', 'Reducir ansiedad', 'Cita 10'
-EXEC ingresoRegistroMedico 'B+', 'Excelente', 85.0, 1.85, 23.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar fuerza', 'Cita 11'
-EXEC ingresoRegistroMedico 'AB-', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Mejorar equilibrio', 'Cita 12'
-EXEC ingresoRegistroMedico 'O-', 'Crítico', 95.0, 1.95, 35.0, 'Lesión de menisco', 'Artritis', 'Hectomorfo', 'Cirugía de vesícula', 'Gluten', 'Reducir colesterol', 'Cita 13'
-EXEC ingresoRegistroMedico 'A+', 'Bueno', 60.0, 1.60, 18.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar resistencia', 'Cita 14'
-EXEC ingresoRegistroMedico 'B-', 'Excelente', 75.0, 1.75, 22.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Mejorar coordinación', 'Cita 15'
-EXEC ingresoRegistroMedico 'AB+', 'Crítico', 100.0, 2.00, 40.0, 'Fractura de muñeca', 'Diabetes tipo 1', 'Hectomorfo', 'Cirugía de cadera', 'Lactosa', 'Reducir estrés', 'Cita 16'
-EXEC ingresoRegistroMedico 'O+', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Mejorar flexibilidad', 'Cita 17'
-EXEC ingresoRegistroMedico 'A-', 'Excelente', 80.0, 1.80, 25.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Aumentar masa muscular', 'Cita 18'
-EXEC ingresoRegistroMedico 'B+', 'Bueno', 65.0, 1.65, 20.0, NULL, NULL, 'Hectomorfo', NULL, NULL, 'Mejorar postura', 'Cita 19'
+EXEC ingresoRegistroMedico 'Registro1' ,'O+', 'Excelente', 70.5, 1.75, 20.5, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Perder peso', 'Cita 1'
+EXEC ingresoRegistroMedico 'Registro2' ,'A-', 'Bueno', 65.2, 1.68, 18.2, NULL, NULL, 'Endomorfo', NULL, NULL, 'Ganar masa muscular', 'Cita 2'
+EXEC ingresoRegistroMedico 'Registro3' ,'B+', 'Crítico', 80.0, 1.80, 25.0, 'Fractura de tobillo', 'Diabetes tipo 2', 'Hectomorfo', 'Cirugía de apéndice', 'Polen', 'Mejorar condición física','Cita 3'
+EXEC ingresoRegistroMedico 'Registro4' ,'AB-', 'Bueno', 62.0, 1.60, 22.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Tonificar músculos', 'Cita 4'
+EXEC ingresoRegistroMedico 'Registro5' ,'O-', 'Excelente', 75.0, 1.85, 18.5, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar resistencia', 'Cita 5'
+EXEC ingresoRegistroMedico 'Registro6' ,'A+', 'Crítico', 90.0, 1.90, 30.0, 'Esguince de rodilla', 'Hipertensión', 'Endomorfo', 'Cirugía de hernia', 'Lactosa', 'Reducir estrés', 'Cita 6'
+EXEC ingresoRegistroMedico 'Registro7' ,'B-', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Hectomorfo', NULL, NULL, 'Mejorar flexibilidad', 'Cita 7'
+EXEC ingresoRegistroMedico 'Registro8' ,'AB+', 'Excelente', 80.0, 1.80, 25.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar masa muscular', 'Cita 8'
+EXEC ingresoRegistroMedico 'Registro9' ,'O+', 'Bueno', 65.0, 1.70, 22.0, 'Tendinitis', NULL, 'Endomorfo', NULL, NULL, 'Mejorar postura', 'Cita 9'
+EXEC ingresoRegistroMedico 'Registro10' ,'A-', 'Crítico', 75.0, 1.75, 28.0, 'Fractura de clavícula', 'Asma', 'Hectomorfo', 'Cirugía de nariz', 'Polvo', 'Reducir ansiedad', 'Cita 10'
+EXEC ingresoRegistroMedico 'Registro11' ,'B+', 'Excelente', 85.0, 1.85, 23.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar fuerza', 'Cita 11'
+EXEC ingresoRegistroMedico 'Registro12' ,'AB-', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Mejorar equilibrio', 'Cita 12'
+EXEC ingresoRegistroMedico 'Registro13' ,'O-', 'Crítico', 95.0, 1.95, 35.0, 'Lesión de menisco', 'Artritis', 'Hectomorfo', 'Cirugía de vesícula', 'Gluten', 'Reducir colesterol', 'Cita 13'
+EXEC ingresoRegistroMedico 'Registro14' ,'A+', 'Bueno', 60.0, 1.60, 18.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Aumentar resistencia', 'Cita 14'
+EXEC ingresoRegistroMedico 'Registro15' ,'B-', 'Excelente', 75.0, 1.75, 22.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Mejorar coordinación', 'Cita 15'
+EXEC ingresoRegistroMedico 'Registro16' ,'AB+', 'Crítico', 100.0, 2.00, 40.0, 'Fractura de muñeca', 'Diabetes tipo 1', 'Hectomorfo', 'Cirugía de cadera', 'Lactosa', 'Reducir estrés', 'Cita 16'
+EXEC ingresoRegistroMedico 'Registro17' ,'O+', 'Bueno', 70.0, 1.70, 20.0, NULL, NULL, 'Mesomorfo', NULL, NULL, 'Mejorar flexibilidad', 'Cita 17'
+EXEC ingresoRegistroMedico 'Registro18' ,'A-', 'Excelente', 80.0, 1.80, 25.0, NULL, NULL, 'Endomorfo', NULL, NULL, 'Aumentar masa muscular', 'Cita 18'
+EXEC ingresoRegistroMedico 'Registro19' ,'B+', 'Bueno', 65.0, 1.65, 20.0, NULL, NULL, 'Hectomorfo', NULL, NULL, 'Mejorar postura', 'Cita 19'
 
 --Ingreso de datos en la tabla IngredienteComida
 EXEC ingresoIngredienteComida 100, 'gramos', 'Arroz y pollo veg', 'Tomate';
@@ -341,62 +345,61 @@ EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Pollo';
 
 
 --Ingreso de datos en la tabla ReporteIncidente
-EXEC ingresoReporteIncidente 'Incidente 1', '1000123456', '1104567908', '1104491862'
-EXEC ingresoReporteIncidente 'Incidente 2', '0109012345', '1104567907', '1758326503'
-EXEC ingresoReporteIncidente 'Incidente 3', '1008901234', '1104567906', '0923081847'
-EXEC ingresoReporteIncidente 'Incidente 4', '1000052132', '1104567905', '0911276548'
-EXEC ingresoReporteIncidente 'Incidente 5', '1707890123', '1104567904', '1705682925'
-EXEC ingresoReporteIncidente 'Incidente 6', '1106789016', '1104567903', '1301167859'
-EXEC ingresoReporteIncidente 'Incidente 7', '1105678904', '1104567902', '1721694285'
-EXEC ingresoReporteIncidente 'Incidente 8', '1002858874', '1104567901', '1705862756'
-EXEC ingresoReporteIncidente 'Incidente 9', '1102345679', '1104567900', '1741643297'
-EXEC ingresoReporteIncidente 'Incidente 10', '1101234568', '1104567899', '0400609954'
-EXEC ingresoReporteIncidente 'Incidente 11', '1100123456', '1104567898', '0412864712'
-EXEC ingresoReporteIncidente 'Incidente 12', '1109012345', '1002858866', '1708071024'
-EXEC ingresoReporteIncidente 'Incidente 13', '1108901234', '1104567896', '0913876254'
-EXEC ingresoReporteIncidente 'Incidente 14', '1107890123', '1004567894', '1209567834'
-EXEC ingresoReporteIncidente 'Incidente 15', '1106789012', '1704567893', '1203567890'
+EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1104491862'
+EXEC ingresoReporteIncidente 'Un pesista levanta más peso del que puede manejar y se lesiona', '0109012345', '1104567907', '1758326503'
+EXEC ingresoReporteIncidente 'Un proyector de techo se desprende y cae durante una clase de yoga', '1008901234', '1104567906', '0923081847'
+EXEC ingresoReporteIncidente 'Un estudiante se desmaya durante una postura complicada', '1000052132', '1104567905', '0911276548'
+EXEC ingresoReporteIncidente 'Se desata una pelea entre dos clientes por el uso de una máquina', '1707890123', '1104567904', '1705682925'
+EXEC ingresoReporteIncidente 'Un corredor se cae de la cinta de correr al tropezar con sus cordones', '1106789016', '1104567903', '1301167859'
+EXEC ingresoReporteIncidente 'Una clase intensa provoca que un participante se deshidrate', '1105678904', '1104567902', '1721694285'
+EXEC ingresoReporteIncidente 'Un cliente olvida ajustar correctamente la altura de una barra y se le cae encima', '1002858874', '1104567901', '1705862756'
+EXEC ingresoReporteIncidente 'Un ciclista se resbala y cae en una bicicleta estática durante una clase', '1102345679', '1104567900', '1741643297'
+EXEC ingresoReporteIncidente 'Un espejo grande se rompe cuando una pesa se le escapa a un cliente descuidado', '1101234568', '1104567899', '0400609954'
+EXEC ingresoReporteIncidente 'Un cliente se hace una lesión en la muñeca al realizar una flexión de forma incorrecta', '1100123456', '1104567898', '0412864712'
+EXEC ingresoReporteIncidente 'Un cliente se resbala en una colchoneta mojada y cae al suelo', '1109012345', '1002858866', '1708071024'
+EXEC ingresoReporteIncidente 'Un cliente se queja de mareos y falta de aire durante una sesión de entrenamiento intensoe 13', '1108901234', '1104567896', '0913876254'
+EXEC ingresoReporteIncidente 'Un cliente se rompe un tendón al levantar mucho peso', '1107890123', '1004567894', '1209567834'
+EXEC ingresoReporteIncidente 'Un monitor de actividad física muestra un ritmo cardíaco peligrosamente alto durante una sesión de entrenamiento', '1106789012', '1704567893', '1203567890'
 
 --Ingreso de datos en la tabla PlanNutricional
-EXEC ingresoPlanNutricional 'Registro1', 'Plan1', 3, 'Comer más proteínas y menos carbohidratos', 'Nueces, mariscos', '2023-05-14', '2023-06-14';
-EXEC ingresoPlanNutricional 'Registro2', 'Plan2', 4, 'Comer más frutas y verduras', 'Lácteos', '2023-05-15', '2023-06-15';
-EXEC ingresoPlanNutricional 'Registro3', 'Plan3', 2, 'Reducir el consumo de azúcar', 'Gluten', '2023-05-16', '2023-06-16';
-EXEC ingresoPlanNutricional 'Registro4', 'Plan4', 5, 'Aumentar la ingesta de fibra', 'Huevos', '2023-05-17', '2023-06-17';
-EXEC ingresoPlanNutricional 'Registro5', 'Plan5', 3, 'Beber más agua', 'Soja', '2023-05-18', '2023-06-18';
-EXEC ingresoPlanNutricional 'Registro6', 'Plan6', 4, 'Evitar alimentos procesados', 'Cacahuetes', '2023-05-19', '2023-06-19';
-EXEC ingresoPlanNutricional 'Registro7', 'Plan7', 2, 'Comer menos grasas saturadas', 'Pescado', '2023-05-20', '2023-06-20';
-EXEC ingresoPlanNutricional 'Registro8', 'Plan8', 5, 'Incluir más alimentos ricos en omega-3', 'Trigo', '2023-05-21', '2023-06-21';
-EXEC ingresoPlanNutricional 'Registro9', 'Plan9', 3, 'Reducir el consumo de sal', 'Frutos secos', '2023-05-22', '2023-06-22';
-EXEC ingresoPlanNutricional 'Registro10', 'Plan10', 4, 'Aumentar la ingesta de calcio', 'Lácteos', '2023-05-23', '2023-06-23';
-EXEC ingresoPlanNutricional 'Registro11', 'Plan11', 2, 'Comer más alimentos ricos en hierro', 'Mariscos', '2023-05-24', '2023-06-24';
-EXEC ingresoPlanNutricional 'Registro12', 'Plan12', 5, 'Incluir más alimentos ricos en vitamina C', 'Cítricos', '2023-05-25', '2023-06-25';
-EXEC ingresoPlanNutricional 'Registro13', 'Plan13', 3, 'Aumentar la ingesta de proteínas magras', 'Carne roja', '2023-05-26', '2023-06-26';
-EXEC ingresoPlanNutricional 'Registro14', 'Plan14', 4, 'Comer más alimentos ricos en antioxidantes', 'Bayas', '2023-05-27', '2023-06-27';
-EXEC ingresoPlanNutricional 'Registro15', 'Plan15', 2, 'Reducir el consumo de bebidas azucaradas', 'Ninguna', '2023-05-28', '2023-06-28';
-EXEC ingresoPlanNutricional 'Registro16', 'Plan16', 5, 'Incluir más alimentos ricos en potasio', 'Plátanos', '2023-05-29', '2023-06-29';
-EXEC ingresoPlanNutricional 'Registro17', 'Plan17', 3, 'Aumentar la ingesta de alimentos ricos en vitamina D', 'Pescado', '2023-05-30', '2023-06-30';
-EXEC ingresoPlanNutricional 'Registro18', 'Plan18', 4, 'Comer más alimentos ricos en vitamina B12', 'Huevos', '2023-05-31', '2023-06-31';
-EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-06-01', '2023-07-01';
-EXEC ingresoPlanNutricional 'Registro20', 'Plan20', 5, 'Aumentar la ingesta de alimentos ricos en magnesio', 'Espinacas', '2023-06-02', '2023-07-02';
+EXEC ingresoPlanNutricional 'Registro1', 'Plan1', 3, 'Comer más proteínas y menos carbohidratos', 'Nueces, mariscos', '2023-07-14', '2023-08-14';
+EXEC ingresoPlanNutricional 'Registro2', 'Plan2', 4, 'Comer más frutas y verduras', 'Lácteos', '2023-08-15', '2023-09-15';
+EXEC ingresoPlanNutricional 'Registro3', 'Plan3', 2, 'Reducir el consumo de azúcar', 'Gluten', '2023-09-16', '2023-10-16';
+EXEC ingresoPlanNutricional 'Registro4', 'Plan4', 5, 'Aumentar la ingesta de fibra', 'Huevos', '2023-10-17', '2023-11-17';
+EXEC ingresoPlanNutricional 'Registro5', 'Plan5', 3, 'Beber más agua', 'Soja', '2023-11-18', '2023-12-18';
+EXEC ingresoPlanNutricional 'Registro6', 'Plan6', 4, 'Evitar alimentos procesados', 'Cacahuetes', '2023-10-19', '2023-11-19';
+EXEC ingresoPlanNutricional 'Registro7', 'Plan7', 2, 'Comer menos grasas saturadas', 'Pescado', '2023-09-20', '2023-10-20';
+EXEC ingresoPlanNutricional 'Registro8', 'Plan8', 5, 'Incluir más alimentos ricos en omega-3', 'Trigo', '2023-08-21', '2023-09-21';
+EXEC ingresoPlanNutricional 'Registro9', 'Plan9', 3, 'Reducir el consumo de sal', 'Frutos secos', '2023-07-22', '2023-08-22';
+EXEC ingresoPlanNutricional 'Registro10', 'Plan10', 4, 'Aumentar la ingesta de calcio', 'Lácteos', '2023-08-23', '2023-09-23';
+EXEC ingresoPlanNutricional 'Registro11', 'Plan11', 2, 'Comer más alimentos ricos en hierro', 'Mariscos', '2023-09-24', '2023-10-24';
+EXEC ingresoPlanNutricional 'Registro12', 'Plan12', 5, 'Incluir más alimentos ricos en vitamina C', 'Cítricos', '2023-10-25', '2023-11-25';
+EXEC ingresoPlanNutricional 'Registro13', 'Plan13', 3, 'Aumentar la ingesta de proteínas magras', 'Carne roja', '2023-11-26', '2023-12-26';
+EXEC ingresoPlanNutricional 'Registro14', 'Plan14', 4, 'Comer más alimentos ricos en antioxidantes', 'Bayas', '2023-09-27', '2023-10-27';
+EXEC ingresoPlanNutricional 'Registro15', 'Plan15', 2, 'Reducir el consumo de bebidas azucaradas', 'Ninguna', '2023-08-28', '2023-09-28';
+EXEC ingresoPlanNutricional 'Registro16', 'Plan16', 5, 'Incluir más alimentos ricos en potasio', 'Plátanos', '2023-07-29', '2023-08-29';
+EXEC ingresoPlanNutricional 'Registro17', 'Plan17', 3, 'Aumentar la ingesta de alimentos ricos en vitamina D', 'Pescado', '2023-08-30', '2023-09-30';
+EXEC ingresoPlanNutricional 'Registro18', 'Plan18', 4, 'Comer más alimentos ricos en vitamina B12', 'Huevos', '2023-09-12', '2023-10-12';
+EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-10-01', '2023-11-01';
 
 --Ingreso de datos en la tabla Menu
-EXEC ingresoMenu 'Menu1', 'Comida1', 'Plan1', 'Dia', 'Informacion adicional 1', 500.0;
-EXEC ingresoMenu 'Menu2', 'Comida2', 'Plan1', 'Medio dia', 'Informacion adicional 2', 600.0;
-EXEC ingresoMenu 'Menu3', 'Comida3', 'Plan1', 'Tarde', 'Informacion adicional 3', 450.0;
-EXEC ingresoMenu 'Menu4', 'Comida4', 'Plan1', 'Media tarde', 'Informacion adicional 4', 550.0;
-EXEC ingresoMenu 'Menu5', 'Comida5', 'Plan1', 'Noche', 'Informacion adicional 5', 700.0;
-EXEC ingresoMenu 'Menu6', 'Comida1', 'Plan2', 'Dia', 'Informacion adicional 6', 520.0;
-EXEC ingresoMenu 'Menu7', 'Comida2', 'Plan2', 'Medio dia', 'Informacion adicional 7', 610.0;
-EXEC ingresoMenu 'Menu8', 'Comida3', 'Plan2', 'Tarde', 'Informacion adicional 8', 460.0;
-EXEC ingresoMenu 'Menu9', 'Comida4', 'Plan2', 'Media tarde', 'Informacion adicional 9', 560.0;
-EXEC ingresoMenu 'Menu10', 'Comida5', 'Plan2', 'Noche', 'Informacion adicional 10', 710.0;
-EXEC ingresoMenu 'Menu11', 'Comida1', 'Plan3', 'Dia', 'Informacion adicional 11', 530.0;
-EXEC ingresoMenu 'Menu12', 'Comida2', 'Plan3', 'Medio dia', 'Informacion adicional 12', 620.0;
-EXEC ingresoMenu 'Menu13', 'Comida3', 'Plan3', 'Tarde', 'Informacion adicional 13', 470.0;
-EXEC ingresoMenu 'Menu14', 'Comida4', 'Plan3', 'Media tarde', 'Informacion adicional 14', 570.0;
-EXEC ingresoMenu 'Menu15', 'Comida5', 'Plan3', 'Noche', 'Informacion adicional 15', 720.0;
-EXEC ingresoMenu 'Menu16', 'Comida1', 'Plan4', 'Dia', 'Informacion adicional 16', 540.0;
-EXEC ingresoMenu 'Menu17', 'Comida2', 'Plan4', 'Medio dia', 'Informacion adicional 17', 630.0;
-EXEC ingresoMenu 'Menu18', 'Comida3', 'Plan4', 'Tarde', 'Informacion adicional 18', 480.0;
-EXEC ingresoMenu 'Menu19', 'Comida4', 'Plan4', 'Media tarde', 'Informacion adicional 19', 580.0;
-EXEC ingresoMenu 'Menu20', 'Comida5', 'Plan4', 'Noche', 'Informacion adicional 20', 730.0;
+EXEC ingresoMenu 'Menu1', 'Ensalada pollo veg', 'Plan1', 'Dia', 'Informacion adicional 1', 500.0;
+EXEC ingresoMenu 'Menu2', 'Arroz y pollo veg', 'Plan1', 'Medio dia', 'Informacion adicional 2', 600.0;
+EXEC ingresoMenu 'Menu3', 'Salmón a la parrilla', 'Plan1', 'Tarde', 'Informacion adicional 3', 450.0;
+EXEC ingresoMenu 'Menu4', 'Hamburguesa', 'Plan1', 'tarde', 'Informacion adicional 4', 550.0;
+EXEC ingresoMenu 'Menu5', 'Pollo al curry', 'Plan1', 'Noche', 'Informacion adicional 5', 700.0;
+EXEC ingresoMenu 'Menu6', 'Ensalada de atún ag', 'Plan2', 'Dia', 'Informacion adicional 6', 520.0;
+EXEC ingresoMenu 'Menu7', 'Pasta con salsa to', 'Plan2', 'Medio dia', 'Informacion adicional 7', 610.0;
+EXEC ingresoMenu 'Menu8', 'Pollo a la plancha', 'Plan2', 'Tarde', 'Informacion adicional 8', 460.0;
+EXEC ingresoMenu 'Menu9', 'Ensalada de salmón', 'Plan2', 'tarde', 'Informacion adicional 9', 560.0;
+EXEC ingresoMenu 'Menu10', 'Arroz con lentejas', 'Plan2', 'Noche', 'Informacion adicional 10', 710.0;
+EXEC ingresoMenu 'Menu11', 'Ensalada pollo man', 'Plan3', 'Dia', 'Informacion adicional 11', 530.0;
+EXEC ingresoMenu 'Menu12', 'Salmón al horno', 'Plan3', 'Medio dia', 'Informacion adicional 12', 620.0;
+EXEC ingresoMenu 'Menu13', 'Ensalada de pollo ag', 'Plan3', 'Tarde', 'Informacion adicional 13', 470.0;
+EXEC ingresoMenu 'Menu14', 'Pasta con salsa po', 'Plan3', 'tarde', 'Informacion adicional 14', 570.0;
+EXEC ingresoMenu 'Menu15', 'Pollo al horno', 'Plan3', 'Noche', 'Informacion adicional 15', 720.0;
+EXEC ingresoMenu 'Menu16', 'Ensalada de atun y h', 'Plan4', 'Dia', 'Informacion adicional 16', 540.0;
+EXEC ingresoMenu 'Menu17', 'Arroz con pollo', 'Plan4', 'Medio dia', 'Informacion adicional 17', 630.0;
+EXEC ingresoMenu 'Menu18', 'Ensalada de pollo es', 'Plan4', 'Tarde', 'Informacion adicional 18', 480.0;
+EXEC ingresoMenu 'Menu19', 'Tacos de pescado', 'Plan4', 'tarde', 'Informacion adicional 19', 580.0;
+

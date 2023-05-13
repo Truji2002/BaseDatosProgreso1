@@ -1,4 +1,4 @@
-﻿--Esto es una prueba
+﻿--PROYECTO IMPLEMENTADO
 
 /*
 El siguiente script fue desarrollado por: David Trujillo, Sebastián Andrade y Jose Miguel Merlo
@@ -728,6 +728,7 @@ GO
 --a través de la cedula del cliente.
 CREATE PROCEDURE ingresoRegistroMedico
  --Se declaran los argumentos que recibe el procedimiento almacenado
+	@nombre VARCHAR (20),
 	@tipoSangre VARCHAR(3),
 	@estadoSalud NVARCHAR(10),
 	@pesoActual DECIMAL(5,2),
@@ -739,12 +740,12 @@ CREATE PROCEDURE ingresoRegistroMedico
 	@operaciones NVARCHAR(120) ,
 	@alergias NVARCHAR(100) ,
 	@objetivoCliente NVARCHAR(150),
-	@nombre VARCHAR (20)
+	@nombreCi VARCHAR (20)
 	
 
 AS
  --Se verifica si existe el plan de entrenamiento con el nombre que se está intentando ingresar.
- IF (SELECT COUNT(*) FROM Cita WHERE nombre = @nombre) = 0
+ IF (SELECT COUNT(*) FROM Cita WHERE nombre = @nombreCi) = 0
 	BEGIN
 	RAISERROR('La cita no existe.',16,10)
  END
@@ -753,11 +754,11 @@ AS
 	BEGIN
  --Si el plan de entrenamient existe, se obtiene el id del plan de entrenamiento.
 	DECLARE @idCita SMALLINT
-	SET @idCita = (SELECT idCita FROM Cita WHERE nombre = @nombre);
+	SET @idCita = (SELECT idCita FROM Cita WHERE nombre = @nombreCi);
 
  --Se realiza la inserción de la tupla en la tabla Resultado.
-	INSERT INTO RegistroMedico(idCita,tipoSangre,estadoSalud,pesoActual,alturaActual,indiceGrasaCorporal,lesiones,enfermedades,somatipo,operaciones,alergias,objetivoCliente)
-	VALUES(@idCita,@tipoSangre,@estadoSalud,@pesoActual,@alturaActual,@indiceGrasaCorporal,@lesiones,@enfermedades,@somatipo,@operaciones,	@alergias,@objetivoCliente)
+	INSERT INTO RegistroMedico(idCita,nombre,tipoSangre,estadoSalud,pesoActual,alturaActual,indiceGrasaCorporal,lesiones,enfermedades,somatipo,operaciones,alergias,objetivoCliente)
+	VALUES(@idCita, @nombre, @tipoSangre,@estadoSalud,@pesoActual,@alturaActual,@indiceGrasaCorporal,@lesiones,@enfermedades,@somatipo,@operaciones,	@alergias,@objetivoCliente)
  END
 GO
 
