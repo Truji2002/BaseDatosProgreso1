@@ -373,7 +373,7 @@ EXEC ingresoPlanNutricional 'Registro15', 'Plan15', 2, 'Reducir el consumo de be
 EXEC ingresoPlanNutricional 'Registro16', 'Plan16', 5, 'Incluir más alimentos ricos en potasio', 'Plátanos', '2023-07-29', '2023-08-29';
 EXEC ingresoPlanNutricional 'Registro17', 'Plan17', 3, 'Aumentar la ingesta de alimentos ricos en vitamina D', 'Pescado', '2023-08-30', '2023-09-30';
 EXEC ingresoPlanNutricional 'Registro18', 'Plan18', 4, 'Comer más alimentos ricos en vitamina B12', 'Huevos', '2023-09-12', '2023-10-12';
-EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-10-01', '2023-11-01';
+--EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-10-01', '2023-11-01';
 
 --Ingreso de datos en la tabla Menu
 EXEC ingresoMenu 'Menu1', 'Ensalada pollo veg', 'Plan1', 'Dia', 'Informacion adicional 1', 500.0;

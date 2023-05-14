@@ -296,7 +296,7 @@ CONSTRAINT FK_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente (idCliente),
 CONSTRAINT FK_Entrenador FOREIGN KEY (idEntrenador) REFERENCES Entrenador (idEntrenador),
 CONSTRAINT CK_Intensidad CHECK (intensidad IN ('Alta','Media','Baja')),
 CONSTRAINT CK_FechaInicio CHECK (fechaInicio>=GETDATE()),
-CONSTRAINT CK_FechaCambio CHECK (fechaCambio>fechaInicio),
+--CONSTRAINT CK_FechaCambio CHECK (fechaCambio>fechaInicio),
 CONSTRAINT CK_Monitoreo CHECK (monitoreo IN ('Semanal','Mensual')),
 CONSTRAINT UQ_NombreP UNIQUE (nombre),
 CONSTRAINT CK_nombre CHECK (PATINDEX('%[0-9]%', nombre) = 0)
@@ -2157,7 +2157,7 @@ EXEC send_email_Gimnasio_sp 'sebas3092@gmail.com', 'Prueba Sebas', 'Prueba agend
 
 
 --Para verificar el estatus de envio
-msdb.dbo.sysmail_help_queue_sp @queue_type = 'Mail' ;
+--msdb.dbo.sysmail_help_queue_sp @queue_type = 'Mail' ;
 --Para ver los mensajes de error (Si los hubiera)
 SELECT * FROM msdb.dbo.sysmail_event_log;
 
@@ -2275,6 +2275,37 @@ BEGIN
 END
 
 
+/****************************************
+Tabla Auditar
+*************************************/
+/*
+CREATE USER Gimnasio_User WITHOUT LOGIN;
+
+USE Master;
+
+CREATE SERVER AUDIT ServerAudit
+TO FILE (FILEPATH = 'C:\audits\', MAXSIZE = 2 GB)
+WITH (ON_FAILURE = CONTINUE);
+
+USE Gimnasio;
+
+CREATE DATABASE AUDIT SPECIFICATION DatabaseAuditSpecification
+FOR SERVER AUDIT ServerAudit
+ADD (SELECT ON SCHEMA::[dbo] BY [Gimnasio_User]),
+ADD (INSERT ON SCHEMA::[dbo] BY [Gimnasio_User]),
+ADD (UPDATE ON SCHEMA::[dbo] BY [Gimnasio_User]),
+ADD (DELETE ON SCHEMA::[dbo] BY [Gimnasio_User]);
+
+USE master;
+
+ALTER SERVER AUDIT ServerAudit WITH (STATE = ON);
+USE Gimnasio;
+
+ALTER DATABASE AUDIT SPECIFICATION DatabaseAuditSpecification WITH (STATE = ON);*/
+
+
+
+
 
 /****************************************************************
 MENU
@@ -2319,13 +2350,14 @@ AS
 BEGIN
     IF @opcion = 1
         BEGIN
-            EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
+            --EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
+			EXEC ingresoPlanNutricional 'Registro19', 'Plan19', 2, 'Incluir más alimentos ricos en zinc', 'Ostras', '2023-10-01', '2023-11-01'
 			Select * from PlanNutricional
         END
 
         IF @opcion = 2
         BEGIN
-            EXEC ingresoPlanEntrenamiento 'Plan peso R', 'Alta', 'Perder peso', '2023-08-13', null, 'Semanal', 1, '1705862756', '1105678901'
+            EXEC ingresoPlanEntrenamiento 'Plan peso R', 'Alta', 'Perder peso', '2023-08-26', null, 'Semanal', 1, '1724399991', '1107890123'
 			Select * from PlanEntrenamiento
         END
 
@@ -2377,10 +2409,58 @@ END
 /*******************************************************
 AUDOTORIA
 *******************************************************/
+
+ALTER DATABASE Gimnasio SET TRUSTWORTHY OFF;
+
+/*
+-- Crear tabla de auditoría
+CREATE TABLE Gimnasio_Auditoria (
+ID INT IDENTITY(1,1) PRIMARY KEY,
+Evento VARCHAR(100),
+Fecha_Hora DATETIME,
+Usuario VARCHAR(50),
+Tabla_Afectada VARCHAR(50),
+Fila_Afectada INT,
+Descripcion VARCHAR(MAX)
+);
+
+
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'tr_Gimnasio_Auditoria')
+BEGIN
+    DROP TRIGGER tr_Gimnasio_Auditoria
+END
+GO
+-- Crear trigger para insertar registros en la tabla de auditoría
+CREATE TRIGGER tr_Gimnasio_Auditoria
+ON DATABASE
+FOR CREATE_TABLE, ALTER_TABLE, DROP_TABLE, INSERT, UPDATE, DELETE
+AS
+BEGIN
+DECLARE @EventData XML = EVENTDATA();
+DECLARE @Evento VARCHAR(100);
+DECLARE @Fecha_Hora DATETIME = GETDATE();
+DECLARE @Usuario VARCHAR(50) = SYSTEM_USER;
+DECLARE @Tabla_Afectada VARCHAR(50);
+DECLARE @Fila_Afectada INT;
+DECLARE @Descripcion VARCHAR(MAX);
+
+SET @Evento = @EventData.value('(/EVENT_INSTANCE/EventType)[1]', 'nvarchar(100)');
+SET @Tabla_Afectada = @EventData.value('(/EVENT_INSTANCE/ObjectName)[1]', 'nvarchar(50)');
+SET @Fila_Afectada = @EventData.value('(/EVENT_INSTANCE/TargetInstance/ID)[1]', 'int');
+SET @Descripcion = CONVERT(VARCHAR(MAX), @EventData);
+
+INSERT INTO Gimnasio_Auditoria (Evento, Fecha_Hora, Usuario, Tabla_Afectada, Fila_Afectada, Descripcion)
+VALUES (@Evento, @Fecha_Hora, @Usuario, @Tabla_Afectada, @Fila_Afectada, @Descripcion);
+END;*/
+
+
+
+
+
 -- Crear una auditoría
 --auditará todos los eventos SELECT, INSERT, UPDATE y DELETE realizados por el 
 --público en los objetos de la base de datos "Gimnasio" que están en el esquema "dbo"
-GO
+/*GO
 CREATE USER Gimnasio_User WITHOUT LOGIN
 
 USE Master
@@ -2405,7 +2485,7 @@ GO  
 ALTER SERVER AUDIT ServerAudit WITH (STATE = ON);  
 GO  
 ALTER DATABASE AUDIT SPECIFICATION DatabaseAuditSpecification WITH (STATE = ON);  
-GO
+GO*/
 
 
 
@@ -2427,7 +2507,7 @@ grant select, insert on Reserva to academico
 */
 
  
-
+/*
 --Permisos de usuario/admin DB
 GRANT ALTER ON DATABASE::Gimnasio TO Administrador
 
@@ -2451,16 +2531,16 @@ ENCRYPTION BY SERVER CERTIFICATE MyCertificate;
 --Guardar el certificado 
 USE master;
 BACKUP CERTIFICATE MyCertificate
-TO FILE = 'C:\DB2prog1\RepoDB2prog1\MyCertificate.cer'
+TO FILE = 'C:\GimnasioEncryption\MyCertificate.cer'
 WITH PRIVATE KEY (
-     FILE = 'C:\DB2prog1\RepoDB2prog1\MyCertificate.pvk',
+     FILE = 'C:\GimnasioEncryption\MyCertificate.pvk',
      ENCRYPTION BY PASSWORD = 'password'
 );
 
 
 --Activar la base con encriptacion
 ALTER DATABASE ProyectoBD2Prog1
-SET ENCRYPTION ON;
+SET ENCRYPTION ON;*/
 
 
 
