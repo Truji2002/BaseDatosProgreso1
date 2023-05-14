@@ -346,20 +346,13 @@ EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Pollo';
 
 --Ingreso de datos en la tabla ReporteIncidente
 EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1724399991'
-EXEC ingresoReporteIncidente 'Un pesista levanta más peso del que puede manejar y se lesiona', '0109012345', '1104567907', '1722485008'
 EXEC ingresoReporteIncidente 'Un proyector de techo se desprende y cae durante una clase de yoga', '1008901234', '1104567906', '1002858874'
-EXEC ingresoReporteIncidente 'Un estudiante se desmaya durante una postura complicada', '1000052132', '1104567905', '0911276548'
 EXEC ingresoReporteIncidente 'Se desata una pelea entre dos clientes por el uso de una máquina', '1707890123', '1104567904', '1705682925'
-EXEC ingresoReporteIncidente 'Un corredor se cae de la cinta de correr al tropezar con sus cordones', '1106789016', '1104567903', '1301167859'
 EXEC ingresoReporteIncidente 'Una clase intensa provoca que un participante se deshidrate', '1105678904', '1104567902', '1721694285'
-EXEC ingresoReporteIncidente 'Un cliente olvida ajustar correctamente la altura de una barra y se le cae encima', '1002858874', '1104567901', '1705862756'
 EXEC ingresoReporteIncidente 'Un ciclista se resbala y cae en una bicicleta estática durante una clase', '1102345679', '1104567900', '1741643297'
-EXEC ingresoReporteIncidente 'Un espejo grande se rompe cuando una pesa se le escapa a un cliente descuidado', '1101234568', '1104567899', '0400609954'
 EXEC ingresoReporteIncidente 'Un cliente se hace una lesión en la muñeca al realizar una flexión de forma incorrecta', '1100123456', '1104567898', '0412864712'
-EXEC ingresoReporteIncidente 'Un cliente se resbala en una colchoneta mojada y cae al suelo', '1109012345', '1002858866', '1708071024'
 EXEC ingresoReporteIncidente 'Un cliente se queja de mareos y falta de aire durante una sesión de entrenamiento intensoe 13', '1108901234', '1104567896', '0913876254'
 EXEC ingresoReporteIncidente 'Un cliente se rompe un tendón al levantar mucho peso', '1107890123', '1004567894', '1209567834'
-EXEC ingresoReporteIncidente 'Un monitor de actividad física muestra un ritmo cardíaco peligrosamente alto durante una sesión de entrenamiento', '1106789012', '1704567893', '1203567890'
 
 --Ingreso de datos en la tabla PlanNutricional
 EXEC ingresoPlanNutricional 'Registro1', 'Plan1', 3, 'Comer más proteínas y menos carbohidratos', 'Nueces, mariscos', '2023-07-14', '2023-08-14';

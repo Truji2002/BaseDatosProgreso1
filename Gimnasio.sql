@@ -2279,86 +2279,135 @@ END
 /****************************************************************
 MENU
 ******************************************************************/
-IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'menuSP')
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'sp_imprimir_menu2')
 BEGIN
-    DROP PROCEDURE menuSP
+    DROP PROCEDURE sp_imprimir_menu2
 END
 GO
 
-CREATE PROCEDURE menuSP (@opcion CHAR(10))
+CREATE PROCEDURE sp_imprimir_menu2
 AS
 BEGIN
-    BEGIN TRY
-        IF @opcion = 'OPCIONES'
-            PRINT '
-		1. Planes de nutrición
-		2. Planes de entrenamiento
-		3. Registro de avance de plan de entrenamiento
+     PRINT '---------- MENU ----------';
+        PRINT '1. Planes de nutrición';
+        PRINT '2. Planes de entrenamiento';
+        PRINT '3. Registro de avance de plan de entrenamiento';
+        PRINT 'Notificación:'
+        PRINT '4. Rutina de entrenamiento del cliente';
+        PRINT '5. Notiifcación de incidentes a médicos';
+        PRINT 'Informes/Consultas'
+        PRINT '6. Informe de progreso del cliente';
+        PRINT '7. Rutina de cliente';
+        PRINT '8. Plan nutricional por cliente';
+        PRINT '9. Salir';
+        PRINT 'En base a las opciones mostradas escoga un numero ';
+END
 
-		Notificación:
-		4. Rutina de entrenamiento del cliente
-		5. Notiifcación de incidentes a médicos
+ 
 
-		Informes/Consultas:
-		6. Informe de progreso del cliente
-		7. RUtina de cliente
-		8. Plan nutricional por cliente'
-        
-        IF @opcion = '1'
-        BEGIN
 
-			EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
-			Select * from PlanNutricional
 
-        END
-
-        IF @opcion = '2'
-		BEGIN
-			EXEC ingresoPlanEntrenamiento 'Plan peso a', 'Alta', 'Perder peso', '2023-08-13', '2023-09-20', 'Semanal', 1, '1104491862', '1000123456'
-        END
-
-        IF @opcion = '3'
-        BEGIN
-			EXEC registrarAsistencia 1104491862
-			EXEC asistenciaCliente 1104491862
-        END
-
-        IF @opcion = '4'
-        BEGIN
-           EXEC sp_enviar_correo_rutinas_cliente '172439991'
-        END
-
-        IF @opcion = '5'
-        BEGIN
-            EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1724399991'
-        END
-
-        IF @opcion = '6'
-        BEGIN
-            EXEC informeProgresoCliente 1104491862
-        END
-
-        IF @opcion = '7'
-        BEGIN
-            EXEC rutinaCliente 1104491862
-        END
-
-        IF @opcion = '8'
-        BEGIN
-            EXEC informePlanNutricionalActual 1104491862
-        END
-    END TRY
-    BEGIN CATCH
-        --PRINT (ERROR_MESSAGE());
-        --SELECT ERROR_NUMBER() error, ERROR_LINE() mensaje, ERROR_SEVERITY() severidad, ERROR_LINE() linea;
-    END CATCH
+ IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'sp_ejecutar_opcion')
+BEGIN
+    DROP PROCEDURE sp_ejecutar_opcion
 END
 GO
 
+CREATE PROCEDURE sp_ejecutar_opcion
+    @opcion TINYINT
+AS
+BEGIN
+    IF @opcion = 1
+        BEGIN
+            EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
+			Select * from PlanNutricional
+        END
 
-EXEC  menuSP '1'
-EXEC  menuSP '3'
-EXEC  menuSP '6'
+        IF @opcion = 2
+        BEGIN
+            EXEC ingresoPlanEntrenamiento 'Plan peso R', 'Alta', 'Perder peso', '2023-08-13', null, 'Semanal', 1, '1705862756', '1105678901'
+			Select * from PlanEntrenamiento
+        END
+
+        IF @opcion = 3
+        BEGIN
+            EXEC registrarAsistencia 1724399991
+            EXEC asistenciaCliente 1724399991
+        END
+
+        IF @opcion = 4
+        BEGIN
+           EXEC sp_enviar_correo_rutinas_cliente '1724399991'
+        END
+
+        IF @opcion = 5
+        BEGIN
+            EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1724399991'
+        END
+
+        IF @opcion = 6
+        BEGIN
+            EXEC informeProgresoCliente '1724399991'
+        END
+
+        IF @opcion = 7
+        BEGIN
+            EXEC rutinaCliente '1724399991'
+        END
+
+        IF @opcion = 8
+        BEGIN
+            EXEC informePlanNutricionalActual '1724399991'
+        END
+        IF @opcion= 9
+        BEGIN
+           PRINT 'Gracias por usar el programa'
+        END
+        IF @opcion> 9
+        BEGIN
+           PRINT 'Ingrese una opción valida'
+        END
+
+END
+
+--Exec sp_imprimir_menu2
+--EXEC sp_ejecutar_opcion '2'
+
+
+/*******************************************************
+AUDOTORIA
+*******************************************************/
+-- Crear una auditoría
+--auditará todos los eventos SELECT, INSERT, UPDATE y DELETE realizados por el 
+--público en los objetos de la base de datos "Gimnasio" que están en el esquema "dbo"
+GO
+CREATE USER Gimnasio_User WITHOUT LOGIN
+
+USE Master
+GO
+
+CREATE SERVER AUDIT ServerAudit  
+TO FILE (FILEPATH = 'C:\audits\', MAXSIZE = 2 GB)  
+WITH (ON_FAILURE = CONTINUE);  
+GO  
+-- Usar la base de datos Gimnasio
+USE Gimnasio;
+GO
+-- Crear una especificación de auditoría de base de datos
+CREATE DATABASE AUDIT SPECIFICATION DatabaseAuditSpecification  
+FOR SERVER AUDIT ServerAudit  
+ADD (SELECT ON SCHEMA::[dbo] BY [Gimnasio_User]),  
+ADD (INSERT ON SCHEMA::[dbo] BY [Gimnasio_User]),  
+ADD (UPDATE ON SCHEMA::[dbo] BY [Gimnasio_User]),  
+ADD (DELETE ON SCHEMA::[dbo] BY [Gimnasio_User]);  
+GO  
+-- Habilitar la auditoría y la especificación de auditoría
+ALTER SERVER AUDIT ServerAudit WITH (STATE = ON);  
+GO  
+ALTER DATABASE AUDIT SPECIFICATION DatabaseAuditSpecification WITH (STATE = ON);  
+GO
+
+
 
 /*
 
@@ -2378,9 +2427,9 @@ grant select, insert on Reserva to academico
 */
 
  
-/*
+
 --Permisos de usuario/admin DB
-GRANT ALTER ON DATABASE::ProyectoBD2Prog1 TO usuario
+GRANT ALTER ON DATABASE::Gimnasio TO Administrador
 
 --Crear master key
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = '<password>';
@@ -2393,7 +2442,7 @@ GRANT CONTROL ON CERTIFICATE::MyCertificate TO usuario
 
 
 --Crear database encrytion key
-USE ProyectoBD2Prog1;
+USE Gimnasio;
 CREATE DATABASE ENCRYPTION KEY
 WITH ALGORITHM = AES_256
 ENCRYPTION BY SERVER CERTIFICATE MyCertificate;
@@ -2411,7 +2460,7 @@ WITH PRIVATE KEY (
 
 --Activar la base con encriptacion
 ALTER DATABASE ProyectoBD2Prog1
-SET ENCRYPTION ON;*/
+SET ENCRYPTION ON;
 
 
 
