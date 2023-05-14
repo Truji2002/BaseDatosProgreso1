@@ -13,11 +13,11 @@ Go
 
 --Insert Tabla Cliente
 INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
-VALUES ('Juan', 'Perez', '1104491862', '1990-05-01', 'Calle 123', 'juanperez@email.com', '0987654321', '0976543210');
+VALUES ('David', 'Trujillo', '1724399991', '1990-05-01', 'Calle 123', 'datrujillo2002@gmail.com', '0987654321', '0976543210');
 INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
-VALUES ('Maria', 'Gonzalez', '1758326503', '1985-12-10', 'Avenida Principal', 'mariagonzalez@email.com', '0923456789', '0987654321');
+VALUES ('Jose', 'Merlo', '1722485008', '1985-12-10', 'Avenida Principal', 'josemielmer2002@hotmail.com', '0923456789', '0987654321');
 INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
-VALUES ('Pedro', 'Lopez', '0923081847', '1992-08-15', 'Calle Secundaria', 'pedrolopez@email.com', '0987123456', '0921654987');
+VALUES ('Sebastian', 'Andrade', '1002858874', '1992-08-15', 'Calle Secundaria', 'sebas3092@gmail.com', '0987123456', '0921654987');
 INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
 VALUES ('Ana', 'Martinez', '0911276548', '1988-03-22', 'Avenida Central', 'anamartinez@email.com', '0964321987', '0954987321');
 INSERT INTO Cliente (nombres, apellidos, numeroCedula, fechaNacimiento, direccionDomicilio, correoElectronico, numeroCelular, numeroContactoEmergencia)
@@ -231,9 +231,9 @@ VALUES ('Tacos de pescado',24.3, 31.7, 8.3, 7.5, 'Tacos de pescado con salsa de 
 */
 
 --Ingreso de datos en la tabla PlanEntrenamiento
-EXEC ingresoPlanEntrenamiento 'Plan peso a', 'Alta', 'Perder peso', '2023-08-13', '2023-09-20', 'Semanal', 1, '1104491862', '1000123456'
-EXEC ingresoPlanEntrenamiento 'Plan tonificar m', 'Media', 'Tonificar músculos', '2023-09-18', '2023-10-01', 'Mensual', 0, '1758326503', '0109012345'
-EXEC ingresoPlanEntrenamiento 'Plan flexibilidad b', 'Baja', 'Mejorar flexibilidad', '2023-10-13', '2023-11-02', NULL, NULL, '0923081847', '1008901234'
+EXEC ingresoPlanEntrenamiento 'Plan peso a', 'Alta', 'Perder peso', '2023-08-13', '2023-09-20', 'Semanal', 1, '1724399991', '1000123456'
+EXEC ingresoPlanEntrenamiento 'Plan tonificar m', 'Media', 'Tonificar músculos', '2023-09-18', '2023-10-01', 'Mensual', 0, '1722485008', '0109012345'
+EXEC ingresoPlanEntrenamiento 'Plan flexibilidad b', 'Baja', 'Mejorar flexibilidad', '2023-10-13', '2023-11-02', NULL, NULL, '1002858874', '1008901234'
 EXEC ingresoPlanEntrenamiento 'Plan musculo a', 'Alta', 'Ganar masa muscular', '2023-11-14', '2023-12-03', 'Semanal', 1, '0911276548', '1707890123'
 EXEC ingresoPlanEntrenamiento 'Plan resistencia m', 'Media', 'Mejorar resistencia', '2023-10-15', '2023-11-04', 'Mensual', 0, '1705682925', '1106789016'
 EXEC ingresoPlanEntrenamiento 'Plan estrés b', 'Baja', 'Reducir estrés', '2023-09-16', '2023-10-05', NULL, NULL, '1301167859', '1105678904'
@@ -274,9 +274,9 @@ EXEC ingresoRutina 'Flexiones diamante', 'Ejercicio de fuerza para triceps', 'Tr
 EXEC ingresoRutina 'Curl de concentración', 'Ejercicio de fuerza para biceps', 'Biceps', 7, 11.5, 3, 'Sabado', 45., 'Plan estrés b'
 
 --Ingreso de datos en la tabla cita Cliente
-EXEC ingresoCitaCliente 'Cita 1', '2023-08-15 10:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-15 11:00:00', '1104491862', '1104567908';
-EXEC ingresoCitaCliente 'Cita 2', '2023-08-16 14:30:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-16 15:30:00', '1758326503', '1104567907';
-EXEC ingresoCitaCliente 'Cita 3', '2023-08-17 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-17 12:00:00', '0923081847', '1104567906';
+EXEC ingresoCitaCliente 'Cita 1', '2023-08-15 10:00:00', 'Cita médica', 'Consulta general', 1, '2023-05-15 11:00:00', '1724399991', '1104567908';
+EXEC ingresoCitaCliente 'Cita 2', '2023-08-16 14:30:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-16 15:30:00', '1722485008', '1104567907';
+EXEC ingresoCitaCliente 'Cita 3', '2023-08-17 11:00:00', 'Cita médica', 'Control de presión arterial', 1, '2023-05-17 12:00:00', '1002858874', '1104567906';
 EXEC ingresoCitaCliente 'Cita 4', '2023-08-18 09:30:00', 'Cita médica', 'Control de diabetes', 1, '2023-05-18 10:30:00', '0911276548', '1104567905';
 EXEC ingresoCitaCliente 'Cita 5', '2023-08-19 15:00:00', 'Cita nutricionista', 'Plan de alimentación', 0, '2023-05-19 16:00:00', '1705682925', '1104567904';
 EXEC ingresoCitaCliente 'Cita 6', '2023-08-20 11:30:00', 'Cita médica', 'Consulta general', 1, '2023-05-20 12:30:00', '1301167859', '1104567903';
@@ -345,9 +345,9 @@ EXEC ingresoIngredienteComida 50, 'gramos', 'Hamburguesa', 'Pollo';
 
 
 --Ingreso de datos en la tabla ReporteIncidente
-EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1104491862'
-EXEC ingresoReporteIncidente 'Un pesista levanta más peso del que puede manejar y se lesiona', '0109012345', '1104567907', '1758326503'
-EXEC ingresoReporteIncidente 'Un proyector de techo se desprende y cae durante una clase de yoga', '1008901234', '1104567906', '0923081847'
+EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1724399991'
+EXEC ingresoReporteIncidente 'Un pesista levanta más peso del que puede manejar y se lesiona', '0109012345', '1104567907', '1722485008'
+EXEC ingresoReporteIncidente 'Un proyector de techo se desprende y cae durante una clase de yoga', '1008901234', '1104567906', '1002858874'
 EXEC ingresoReporteIncidente 'Un estudiante se desmaya durante una postura complicada', '1000052132', '1104567905', '0911276548'
 EXEC ingresoReporteIncidente 'Se desata una pelea entre dos clientes por el uso de una máquina', '1707890123', '1104567904', '1705682925'
 EXEC ingresoReporteIncidente 'Un corredor se cae de la cinta de correr al tropezar con sus cordones', '1106789016', '1104567903', '1301167859'

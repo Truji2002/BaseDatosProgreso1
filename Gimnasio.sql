@@ -13,6 +13,38 @@ Fecha de creacion: 08-05-2023
 USE Master
 GO
 
+--Crear los inicios de sesión (logins):
+--Comprobando la existencia de inicios de sesion
+IF EXISTS (SELECT * FROM sys.syslogins WHERE name = 'Administrador')
+BEGIN
+    DROP LOGIN Administrador;
+END
+
+IF EXISTS (SELECT * FROM sys.syslogins WHERE name = 'Cliente')
+BEGIN
+    DROP LOGIN Cliente;
+END
+
+IF EXISTS (SELECT * FROM sys.syslogins WHERE name = 'Entrenador')
+BEGIN
+    DROP LOGIN Entrenador;
+END
+    
+IF EXISTS (SELECT * FROM sys.syslogins WHERE name = 'PersonalSalud')
+BEGIN
+    DROP LOGIN PersonalSalud;
+END
+GO
+
+--Creando los inicios de sesión
+CREATE LOGIN Administrador WITH PASSWORD = 'TuContraseñaSegura1';
+CREATE LOGIN Cliente WITH PASSWORD = 'TuContraseñaSegura2';
+CREATE LOGIN Entrenador WITH PASSWORD = 'TuContraseñaSegura3';
+CREATE LOGIN PersonalSalud WITH PASSWORD = 'TuContraseñaSegura4';
+GO
+
+
+
 -- Verificar si la base de datos Gimnasio ya existe; si existe, eliminarla
 IF EXISTS(SELECT name FROM sys.databases WHERE name = 'Gimnasio')
 BEGIN
@@ -21,6 +53,51 @@ END
 
 CREATE DATABASE Gimnasio;
 GO
+
+
+/*********************************************************
+USUARIOS
+**********************************************************/
+-- Crear los usuarios en la base de datos y asociarlos con los inicios de sesión:
+-- Comprobar la existencia de los usuarios y borrarlos en caso de ser así
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'Administrador')
+    DROP USER Administrador;
+
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'Cliente')
+    DROP USER Cliente;
+
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'Entrenador')
+    DROP USER Entrenador;
+
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'PersonalSalud')
+    DROP USER PersonalSalud;
+GO
+
+-- Creando usuarios
+CREATE USER Administrador FOR LOGIN Administrador;
+CREATE USER Cliente FOR LOGIN Cliente;
+CREATE USER Entrenador FOR LOGIN Entrenador;
+CREATE USER PersonalSalud FOR LOGIN PersonalSalud;
+GO
+
+
+--Asignar roles y permisos a los usuarios según sus responsabilidades:
+-- Administrador: Otorgar permisos de administración
+EXEC sp_addrolemember 'db_owner', 'Administrador';
+
+-- Cliente: Otorgar permisos de lectura y escritura
+EXEC sp_addrolemember 'db_datareader', 'Cliente';
+EXEC sp_addrolemember 'db_datawriter', 'Cliente';
+
+-- Entrenador: Otorgar permisos de lectura y escritura
+EXEC sp_addrolemember 'db_datareader', 'Entrenador';
+EXEC sp_addrolemember 'db_datawriter', 'Entrenador';
+
+-- Personal Salud: Otorgar permisos de lectura
+EXEC sp_addrolemember 'db_datareader', 'PersonalSalud';
+GO
+
+
 
 /*
 **********************************
@@ -1433,6 +1510,612 @@ AS
         END
     END
 GO
+
+
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'sp_insertar_plan_nutricional')
+BEGIN
+    DROP PROCEDURE sp_insertar_plan_nutricional
+END
+GO
+
+/*********
+		 Stored procedure para ingresar un plan nutricional directamente con una cédula
+**********/
+
+CREATE PROCEDURE sp_insertar_plan_nutricional
+    @numeroCedula cedulaIdentidad,
+    @nombrePlan NVARCHAR(20),
+    @cantidadComidasDia TINYINT,
+    @indicacionesGenerales NVARCHAR(300) = NULL,
+    @alergiasConsideradas NVARCHAR(100) = NULL,
+    @fechaInicio DATE,
+    @fechaFin DATE
+AS
+BEGIN
+    DECLARE @idRegistroMedico SMALLINT
+    DECLARE @idCliente SMALLINT
+    DECLARE @idEntrenador TINYINT
+
+    -- Buscar el registro médico asociado a la cédula del cliente o del entrenador
+    IF EXISTS (SELECT 1 FROM Cliente WHERE numeroCedula = @numeroCedula)
+    BEGIN
+        SELECT @idRegistroMedico = rm.idRegistroMedico, @idCliente = c.idCliente
+        FROM RegistroMedico rm
+        INNER JOIN Cita c ON rm.idCita = c.idCita
+        INNER JOIN Cliente cl ON c.idCliente = cl.idCliente
+        WHERE cl.numeroCedula = @numeroCedula
+    END
+    ELSE IF EXISTS (SELECT 1 FROM Entrenador WHERE numeroCedula = @numeroCedula)
+    BEGIN
+        SELECT @idRegistroMedico = rm.idRegistroMedico, @idEntrenador = e.idEntrenador
+        FROM RegistroMedico rm
+        INNER JOIN Cita c ON rm.idCita = c.idCita
+        INNER JOIN Entrenador e ON c.idEntrenador = e.idEntrenador
+        WHERE e.numeroCedula = @numeroCedula
+    END
+    ELSE
+    BEGIN
+        RAISERROR('No se encontró un cliente o entrenador con la cédula especificada', 16, 1)
+        RETURN
+    END
+
+    -- Insertar el nuevo plan nutricional
+    INSERT INTO PlanNutricional (idRegistroMedico, nombre, cantidadComidasDia, indicacionesGenerales, alergiasConsideradas, fechaInicio, fechaFin)
+    VALUES (@idRegistroMedico, @nombrePlan, @cantidadComidasDia, @indicacionesGenerales, @alergiasConsideradas, @fechaInicio, @fechaFin)
+
+    -- Obtener el ID del nuevo plan nutricional
+    DECLARE @idPlanNutricional SMALLINT
+    SET @idPlanNutricional = SCOPE_IDENTITY()
+
+    -- Actualizar la tabla de citas para indicar que se ha creado un nuevo plan nutricional
+    IF @idCliente IS NOT NULL
+    BEGIN
+        UPDATE Cita SET tipo = 'Cita nutricionista' WHERE idCliente = @idCliente
+    END
+    ELSE IF @idEntrenador IS NOT NULL
+    BEGIN
+        UPDATE Cita SET tipo = 'Cita nutricionista' WHERE idEntrenador = @idEntrenador
+    END
+
+    -- Mostrar un mensaje de éxito
+    PRINT 'Se ha insertado un nuevo plan nutricional para el registro médico asociado a la cédula ' + @numeroCedula
+END
+
+EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
+
+
+/*****************************************************************
+INFORMES
+******************************************************************/
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'registrarAsistencia')
+BEGIN
+    DROP PROCEDURE registrarAsistencia
+END
+GO
+--Creación de un Procedimiento Almacenado que permita registrar la asistencia de un cliente, 
+--a través de la cedula del cliente.
+CREATE PROCEDURE registrarAsistencia (@cedulaCliente nvarchar(12))
+AS
+	--Se verifica que eXita el cliente
+	if ((SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedulaCliente) = 0)
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	--Se declaran las variables necesarias
+	DECLARE @idCliente AS INT
+
+	--Se asigan valor a las variables
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedulaCliente)
+
+	--Se verifica si el valor del campo es null, si s null entonces se establece la asistencia en 1, sino esta incrementa en 1 con cada llamada al procedure
+	IF EXISTS ((SELECT TOP 1 asistencia FROM PlanEntrenamiento WHERE idCliente = @idCliente AND asistencia IS NULL ORDER BY idPlanEntrenamiento DESC) )
+		BEGIN
+			PRINT('No tenia asistencia')
+			UPDATE PlanEntrenamiento 
+			SET asistencia = 1
+			WHERE  idPlanEntrenamiento = (SELECT TOP 1 idPlanEntrenamiento FROM PlanEntrenamiento WHERE idCliente = @idCliente ORDER BY idPlanEntrenamiento DESC)
+			PRINT('Asistencia registrada correctamente')
+		END
+	ELSE
+		BEGIN
+			PRINT('Ha estado asisteniendo')
+			UPDATE PlanEntrenamiento 
+			SET asistencia += 1
+			WHERE  idPlanEntrenamiento = (SELECT TOP 1 idPlanEntrenamiento FROM PlanEntrenamiento WHERE idCliente = @idCliente ORDER BY idPlanEntrenamiento DESC)
+			PRINT('Asistencia registrada correctamente')
+		END
+GO
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'asistenciaCliente')
+BEGIN
+    DROP PROCEDURE asistenciaCliente
+END
+GO
+--Procedure para ver la asistencia del cliente de acuerdo con cada rutinaque tenga y hacer un calculo total de dias que ha asistido
+CREATE PROCEDURE asistenciaCliente (@cedulaCliente nvarchar(12))
+AS
+	
+	--Validacino de datos segun la cedula
+	if ((SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedulaCliente) = 0)
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	--Declarar las variables
+
+	DECLARE @idCliente AS INT
+	DECLARE @nombresCliente AS NVARCHAR(100)
+	DECLARE @apellidosClientes AS NVARCHAR(100)
+	DECLARE @fechaInicioPlanEntenamiento AS DATE
+	DECLARE	@asistenciasTotales SMALLINT
+
+	--Inicializacion de las variables
+
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedulaCliente)
+	SET @nombresCliente = (SELECT TOP 1 nombres FROM Cliente WHERE idCliente = @idCliente)
+	SET @apellidosClientes = (SELECT TOP 1 apellidos FROM Cliente WHERE idCliente = @idCliente)
+	SET @fechaInicioPlanEntenamiento = (SELECT TOP 1 fechaInicio FROM PlanEntrenamiento P WHERE P.idCliente = @idCliente)
+	SET @asistenciasTotales = (SELECT SUM(asistencia) FROM PlanEntrenamiento P WHERE P.idCliente = @idCliente)
+
+	--Datos generales del cliente
+
+	PRINT('****************************************Life Fitness Gym****************************************')
+	PRINT('Cliente: ' + @nombresCliente + ' ' + @apellidosClientes)
+	PRINT('Fecha de inicio de entrenmiento: ' + CONVERT(NVARCHAR(10), @fechaInicioPlanEntenamiento, 120))
+	PRINT('************************************************************************************************')
+	PRINT('')
+
+	DECLARE @idPlanEntrenamiento SMALLINT, @asistencia TINYINT, @fechaInicio DATE, @fechaCambio DATE
+	
+	/*Se declara y se usa el cursor*/
+	DECLARE cursorAsistencia CURSOR FOR 
+		SELECT idPlanEntrenamiento, asistencia, fechaInicio , fechaCambio
+		FROM PlanEntrenamiento
+		WHERE idCliente = @idCliente
+
+	OPEN cursorAsistencia
+
+	FETCH NEXT FROM cursorAsistencia INTO @idPlanEntrenamiento, @asistencia , @fechaInicio, @fechaCambio
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		PRINT('*****************************************************************')
+		PRINT(' Asistencia fechas desde' + CONVERT(NVARCHAR(10), @fechaInicio, 120)+' hasta ' + 
+			CONVERT(NVARCHAR(10), @fechaCambio, 120)+': ' + CONVERT(NVARCHAR(10), @asistencia, 120) + 'dias')
+
+		PRINT('*****************************************************************')
+		PRINT('')
+		FETCH NEXT FROM cursorAsistencia INTO @idPlanEntrenamiento, @asistencia , @fechaInicio, @fechaCambio
+	END
+	PRINT('')
+	PRINT('')
+	PRINT('')
+	PRINT ('Dias totales asistidos: ' + CONVERT(NVARCHAR(10), @asistenciasTotales, 120))
+	CLOSE cursorAsistencia
+	DEALLOCATE cursorAsistencia
+GO
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'informeProgresoCliente')
+BEGIN
+    DROP PROCEDURE informeProgresoCliente
+END
+GO
+--Creación de un Procedimiento Almacenado que permita visualizar un informe del prgreso del cliente, 
+--a través de la cedula del cliente.
+CREATE PROCEDURE informeProgresoCliente (@cedulaCliente nvarchar(12))
+AS
+	/*Validacion de datos de entrada de cliente*/
+	if ((SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedulaCliente) = 0)
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	--Se declaran los argumentos que recibe el procedimiento almacenado
+	DECLARE @idCliente AS TINYINT
+	DECLARE @nombresCliente AS NVARCHAR(100)
+	DECLARE @apellidosClientes AS NVARCHAR(100)
+	DECLARE @fechaInicioPlanEntenamiento AS DATE
+	DECLARE @idPrimeraCitaMedica AS TINYINT
+	DECLARE @alturaInicial AS DECIMAL(3,2)
+	DECLARE @pesoInicial AS  DECIMAL(5,2)
+	DECLARE @IGCInicial AS DECIMAL (3,1)
+
+	--Se asigna un valor a las variables
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedulaCliente)
+	SET @nombresCliente = (SELECT TOP 1 nombres FROM Cliente WHERE idCliente = @idCliente)
+	SET @apellidosClientes = (SELECT TOP 1 apellidos FROM Cliente WHERE idCliente = @idCliente)
+	SET @idPrimeraCitaMedica = (SELECT TOP 1 idCita FROM Cita WHERE idCita = @idCliente)
+	SET @alturaInicial = (SELECT alturaActual FROM RegistroMedico WHERE idRegistroMedico = (SELECT TOP 1 idRegistroMedico FROM RegistroMedico WHERE idCita = @idPrimeraCitaMedica))
+	SET @pesoInicial = (SELECT pesoActual FROM RegistroMedico WHERE idRegistroMedico = (SELECT TOP 1 idRegistroMedico FROM RegistroMedico WHERE idCita = @idPrimeraCitaMedica))
+	SET @IGCInicial = (SELECT indiceGrasaCorporal FROM RegistroMedico WHERE idRegistroMedico = (SELECT TOP 1 idRegistroMedico FROM RegistroMedico WHERE idCita = @idPrimeraCitaMedica))
+
+	
+
+	/*Se muestra la informacion con la que el cliente llego al gimnasio, es decir la inicial*/
+	PRINT('****************************************Life Fitness Gym****************************************')
+	PRINT('Cliente: ' + @nombresCliente + ' ' + @apellidosClientes)
+	PRINT('************************Información inicial del cliente sobre su progreso************************')
+	PRINT('Altura inicial: ' + CONVERT(NVARCHAR(10), @alturaInicial, 120))
+	PRINT('Peso inicial: ' + CONVERT(NVARCHAR(10), @pesoInicial, 120))
+	PRINT('Indice de grasa corporal inicial: ' + CONVERT(NVARCHAR(10), @IGCInicial, 120))
+
+	/*Se declaran la variables que se van a usar en el cursor*/
+	DECLARE @idCita SMALLINT, @fechaRegistro DATE, @alturaActual DECIMAL(3,2), @pesoActual DECIMAL(5,2), @indiceGrasaCorporal DECIMAL (3,1), @estadoSalud NVARCHAR(10)
+	
+	/*SE declara y se usa el cursor*/
+	DECLARE cursorRegistroMedico CURSOR FOR 
+		SELECT REG.idCita, REG.fechaRegistro ,REG.alturaActual, REG.pesoActual, REG.indiceGrasaCorporal, REG.estadoSalud
+		FROM RegistroMedico REG
+		INNER JOIN Cita C ON C.idCita = REG.idCita
+		INNER JOIN Cliente Cli ON Cli.idCliente = @idCliente
+		ORDER BY REG.idCita
+
+	OPEN cursorRegistroMedico
+
+	FETCH NEXT FROM cursorRegistroMedico INTO @idCita, @fechaRegistro, @alturaActual, @pesoActual, @indiceGrasaCorporal, @estadoSalud
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		PRINT('')
+		PRINT('************************Fecha registro: ' + CONVERT(NVARCHAR(10), @fechaRegistro, 120) + ' ************************')
+		PRINT('Altura a la fecha: ' + CONVERT(NVARCHAR(10), @alturaActual, 120))
+		PRINT('Peso a la fecha: ' + CONVERT(NVARCHAR(10), @pesoActual, 120))
+		PRINT('Indice de grasa corporal a la fecha: ' + CONVERT(NVARCHAR(10), @indiceGrasaCorporal, 120))
+		PRINT('Estado de salud a la fecha: ' + CONVERT(NVARCHAR(10), @estadoSalud, 120))
+		PRINT('')
+		
+		FETCH NEXT FROM cursorRegistroMedico INTO @idCita, @fechaRegistro, @alturaActual, @pesoActual, @indiceGrasaCorporal, @estadoSalud
+	END
+
+	CLOSE cursorRegistroMedico
+	DEALLOCATE cursorRegistroMedico
+GO
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'rutinaCliente')
+BEGIN
+    DROP PROCEDURE rutinaCliente
+END
+GO
+--Creación de un Procedimiento Almacenado que permita isualizar la rutina actual del cliente, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE rutinaCliente (@cedulaCliente nvarchar(12))
+AS
+	--Validacino de datos segun la cedula
+	if ((SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedulaCliente) = 0)
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	--Declarar las variables
+
+	DECLARE @idCliente AS INT
+	DECLARE @nombresCliente AS NVARCHAR(100)
+	DECLARE @apellidosClientes AS NVARCHAR(100)
+	DECLARE @fechaInicioPlanEntenamiento AS DATE
+
+	--Inicializacion de las variables
+
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedulaCliente)
+	SET @nombresCliente = (SELECT TOP 1 nombres FROM Cliente WHERE idCliente = @idCliente)
+	SET @apellidosClientes = (SELECT TOP 1 apellidos FROM Cliente WHERE idCliente = @idCliente)
+	SET @fechaInicioPlanEntenamiento = (SELECT TOP 1 fechaInicio FROM PlanEntrenamiento P WHERE P.idCliente = @idCliente)
+
+	--Datos generales del cliente
+
+	PRINT('****************************************Life Fitness Gym****************************************')
+	PRINT('Cliente: ' + @nombresCliente + ' ' + @apellidosClientes)
+	PRINT('Fecha de inicio del plan de entrenamiento: ' + CONVERT(NVARCHAR(10), @fechaInicioPlanEntenamiento, 120))
+	PRINT('************************************************************************************************')
+	
+	--Se declaran las variables para el cursor
+
+	DECLARE @idRutina SMALLINT, 
+		@nombreEjercicio NVARCHAR(30),
+		@descripcionEjercicio NVARCHAR(120), 
+		@grupoMuscular NVARCHAR(20),
+		@cantidadRepeticiones TINYINT,
+		@tiempoDescanso DECIMAL (3,1),
+		@cantidadSeries TINYINT,
+		@diaSemana VARCHAR(9)
+	
+	/*Se declara y se usa el cursor*/
+	DECLARE cursorRutina CURSOR FOR 
+		SELECT Rut.idRutina, Rut.nombreEjercicio, Rut.descripcionEjercicio, Rut.grupoMuscular, Rut.cantidadRepeticiones, Rut.tiempoDescanso, Rut.cantidadSeries, Rut.diaSemana
+		FROM Rutina Rut
+		WHERE idPlanEntrenamiento = (SELECT TOP 1 idPlanEntrenamiento FROM PlanEntrenamiento WHERE idCliente = @idCliente ORDER BY idPlanEntrenamiento DESC)
+	OPEN cursorRutina
+
+	FETCH NEXT FROM cursorRutina INTO @idRutina, @nombreEjercicio, @descripcionEjercicio, @grupoMuscular, @cantidadRepeticiones, @tiempoDescanso, @cantidadSeries, @diaSemana
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		PRINT('')
+		PRINT('**********Dia de la semana: ' + @diaSemana + ' ************')
+		PRINT('Grupo Muscular: ' + @grupoMuscular)
+		PRINT('Nombre del ejercicio: ' + @nombreEjercicio)
+		PRINT('Cant. Series: ' + CONVERT(NVARCHAR(10), @cantidadSeries, 120))
+		PRINT('Cant. Repeticiones: ' + CONVERT(NVARCHAR(10), @cantidadRepeticiones, 120))
+		PRINT('Descanso entre series: ' + CONVERT(NVARCHAR(10), @tiempoDescanso, 120))
+		PRINT('')
+		
+		FETCH NEXT FROM cursorRutina INTO @idRutina, @nombreEjercicio, @descripcionEjercicio, @grupoMuscular, @cantidadRepeticiones, @tiempoDescanso, @cantidadSeries, @diaSemana
+	END
+
+	CLOSE cursorRutina
+	DEALLOCATE cursorRutina
+GO
+
+
+--Verificar si existe el Procedimiento Almacenado
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'informePlanNutricionalActual')
+BEGIN
+    DROP PROCEDURE informePlanNutricionalActual
+END
+GO
+--Creación de un Procedimiento Almacenado que permita ver el plan nutricional actual del cliente o del entrenador, 
+--a través de la cedula del cliente. 
+CREATE PROCEDURE informePlanNutricionalActual (@cedula nvarchar(12))
+AS
+	/*VALIDACION DE DATOS DEL CLIENTE*/
+	if (SELECT COUNT (*) FROM Cliente C WHERE C.numeroCedula = @cedula) = 0 AND (SELECT COUNT (*) FROM Entrenador E WHERE E.numeroCedula = @cedula) = 0
+	BEGIN
+		RAISERROR('INGRESE UNA CEDULA VALIDA O VERIFIQUE QUE EL CLIENTE EXISTA', 16,1)
+		RETURN
+	END
+
+	/*DECLARACION Y ASIGANCION DE VARIABLES*/
+	DECLARE @idCliente AS TINYINT = NULL
+	DECLARE @idEntrenador AS TINYINT = NULL
+	DECLARE @nombresCliente AS NVARCHAR(100)
+	DECLARE @apellidosClientes AS NVARCHAR(100)
+	DECLARE @nombresEntrenador AS NVARCHAR(100)
+	DECLARE @apellidosEntrenador AS NVARCHAR(100)
+	DECLARE @idUltimaCitaCliente AS TINYINT
+	DECLARE @idUltimaCitaEntrenador AS TINYINT
+
+
+	SET @idCliente = (SELECT TOP 1 idCliente FROM Cliente WHERE numeroCedula = @cedula)
+	SET @idEntrenador = (SELECT TOP 1 idEntrenador FROM Entrenador WHERE numeroCedula = @cedula)
+	SET @idUltimaCitaCliente = (SELECT TOP 1 idCita FROM Cita WHERE idCliente = @idCliente ORDER BY idCita DESC)
+	SET @idUltimaCitaEntrenador = (SELECT TOP 1 idCita FROM Cita WHERE idEntrenador = @idEntrenador ORDER BY idCita DESC)
+
+	/*Se muestra la ifnormacion general del cliente o del entrenador*/
+	PRINT('****************************************Life Fitness Gym****************************************')
+	IF (@idCliente IS NOT NULL)
+		BEGIN
+			SET @nombresCliente = (SELECT TOP 1 nombres FROM Cliente WHERE idCliente = @idCliente)
+			SET @apellidosClientes = (SELECT TOP 1 apellidos FROM Cliente WHERE idCliente = @idCliente)
+			PRINT('Cliente: ' + @nombresCliente + ' ' + @apellidosClientes)
+		END
+	IF(@idEntrenador IS NOT NULL)
+		BEGIN
+			SET @nombresEntrenador = (SELECT TOP 1 nombres FROM Entrenador WHERE idEntrenador = @idEntrenador)
+			SET @apellidosEntrenador = (SELECT TOP 1 apellidos FROM Entrenador WHERE idEntrenador = @idEntrenador)
+			PRINT('Entrenador: ' + @nombresEntrenador + ' ' + @apellidosEntrenador)
+		END
+	PRINT('************************************************************************************************')
+	PRINT ('')
+
+	--Se muestra las alrgias que constan el los registros del cliente o del entrenador
+	IF (@idCliente IS NOT NULL)
+		BEGIN
+			IF EXISTS ((SELECT TOP 1 alergias FROM RegistroMedico WHERE idCita = @idUltimaCitaCliente AND alergias IS NOT NULL ORDER BY idRegistroMedico DESC) )
+				BEGIN
+					DECLARE @alergiasCliente AS NVARCHAR(100) = (SELECT TOP 1 alergias FROM RegistroMedico WHERE idCita = @idUltimaCitaCliente ORDER BY idRegistroMedico DESC)
+					PRINT('************************Informacion medica relevante************************')
+					PRINT('Alergias: ' + @alergiasCliente)
+					PRINT('****************************************************************************')
+					PRINT('')
+				END
+		END
+
+	IF (@idEntrenador IS NOT NULL)
+		BEGIN
+			IF EXISTS ((SELECT TOP 1 alergias FROM RegistroMedico WHERE idCita = @idUltimaCitaEntrenador AND alergias IS NOT NULL ORDER BY idRegistroMedico DESC) )
+				BEGIN
+					DECLARE @alergiasEntrenador AS NVARCHAR(100) = (SELECT TOP 1 alergias FROM RegistroMedico WHERE idCita = @idUltimaCitaEntrenador ORDER BY idRegistroMedico DESC)
+					PRINT('************************Informacion medica relevante************************')
+					PRINT('Alergias: ' + @alergiasEntrenador)
+					PRINT('****************************************************************************')
+					PRINT('')
+				END
+		END
+
+	--Se muetra la informacion general de los planes nutricionales de los clientes o de los entrenadores
+	IF (@idCliente IS NOT NULL)
+		BEGIN
+			DECLARE @ultimoRegistroCli AS TINYINT = (SELECT idRegistroMedico FROM RegistroMedico WHERE idCita = @idUltimaCitaCliente)
+			DECLARE @nombrePlanCli AS VARCHAR(20) = (SELECT nombre FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			DECLARE @indicacionesGeneralesCli AS NVARCHAR(300) = (SELECT indicacionesGenerales FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			DECLARE @cantidadComidasCli AS TINYINT = (SELECT cantidadComidasDia FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			DECLARE @alergiasConsideradasCli AS NVARCHAR(100) = (SELECT alergiasConsideradas FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			DECLARE @fechaInicioCli AS DATE = (SELECT fechaInicio FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			DECLARE @fechaFinCli AS DATE = (SELECT fechaFin FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+
+			PRINT('************************Informacion plan nutricional actual del cliente************************')
+			PRINT('Nombre del plan: ' + @nombrePlanCli)
+			PRINT('Indicaciones generales: ' + @indicacionesGeneralesCli)
+			PRINT('Cant. de Comidas al dia: ' + CONVERT(NVARCHAR(10), @cantidadComidasCli, 120))
+			PRINT('Alegias Consideradas: ' + @alergiasConsideradasCli)
+			PRINT('Fecha de inicio plan: ' + CONVERT(NVARCHAR(10), @fechaInicioCli, 120))
+			PRINT('Fecha de fin del plan: ' + CONVERT(NVARCHAR(10), @fechaFinCli, 120))
+			PRINT('**************************Menu que consta el plan nutricional del cliente************************')
+
+			/*DECLARAR VARIBLES QUE SE VAN A USAR EN EL CURSOR*/
+			DECLARE @idMenuC SMALLINT ,@nombreC varchar(20), @horarioMenuC varchar(10), @informacionAdicionalC NVARCHAR (300), @cantidadTotalCaloriasC DECIMAL (6,1)
+			DECLARE @nombreMenuComida varchar(20), @nombreComidaC VARCHAR(20), @cantidadProteinaC DECIMAL (5,1), @cantidadCarbohidratosC DECIMAL (5,1), @cantidadGrasasC DECIMAL (5,1), @cantidadFibraC DECIMAL (5,1), @preparacionC NVARCHAR(300)
+			
+			/*SE DECLARA Y SE USA EL CURSOR*/
+			DECLARE cursorPlanNutricionalCliente CURSOR FOR SELECT idMenu, nombre, horarioMenu ,informacionAdicional, cantidadTotalCalorias 
+				FROM Menu WHERE idPlanNutricional = (SELECT idPlanNutricional FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+
+
+			DECLARE cursorComidasCliente CURSOR FOR SELECT M.nombre, C.nombre, C.cantidadProteina, C.cantidadCarbohidratos, C.cantidadGrasas, C.cantidadFibra, C.preparacion 
+				FROM Comida C
+				INNER JOIN MENU M ON M.idComida = C.idComida
+				WHERE M.idPlanNutricional = (SELECT idPlanNutricional FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroCli)
+			BEGIN
+
+				OPEN cursorPlanNutricionalCliente
+				FETCH NEXT FROM cursorPlanNutricionalCliente INTO @idMenuC, @nombreC, @horarioMenuC, @informacionAdicionalC, @cantidadTotalCaloriasC
+
+				WHILE @@FETCH_STATUS = 0
+				BEGIN
+					PRINT('		************************Nombre del menu: ' + @nombreC + '************************')
+					PRINT('		Horario Menu: ' + @horarioMenuC)
+					PRINT('		Informacion Adicional: ' + @informacionAdicionalC)
+					PRINT('		Cantidad de calorias totales: ' + CONVERT(NVARCHAR(10), @cantidadTotalCaloriasC, 120))
+					PRINT('')
+					PRINT('')
+					FETCH NEXT FROM cursorPlanNutricionalCliente INTO  @idMenuC, @nombreC, @horarioMenuC, @informacionAdicionalC, @cantidadTotalCaloriasC
+				END
+
+				CLOSE cursorPlanNutricionalCliente
+				DEALLOCATE cursorPlanNutricionalCliente
+			END
+			
+			PRINT('		****************************Comidas de acuerdo con cada menu *********************************')
+
+			--Cursor para comidas
+			OPEN cursorComidasCliente
+					FETCH NEXT FROM cursorComidasCliente INTO  @nombreComidaC, @cantidadProteinaC, @cantidadCarbohidratosC, @cantidadGrasasC, @cantidadFibraC, @preparacionC
+				
+					WHILE @@FETCH_STATUS = 0
+					BEGIN
+						PRINT('')
+						PRINT('		*****************Comida: ' + @nombreComidaC + ' del menu:' +  @nombreMenuComida + '********************')
+						PRINT('		Preparacion: ' + @preparacionC)
+						PRINT('		Cantidad de proteina     : ' + CONVERT(NVARCHAR(10), @cantidadProteinaC, 120))
+						PRINT('		Cantidad de carbohidratos: ' + CONVERT(NVARCHAR(10), @cantidadCarbohidratosC, 120))
+						PRINT('		Cantidad de grasas       : ' + CONVERT(NVARCHAR(10), @cantidadGrasasC, 120))
+						PRINT('		Cantidad de fibra        : ' + CONVERT(NVARCHAR(10), @cantidadFibraC, 120))
+						PRINT('')
+
+						FETCH NEXT FROM cursorComidasCliente INTO @nombreComidaC, @cantidadProteinaC, @cantidadCarbohidratosC, @cantidadGrasasC, @cantidadFibraC, @preparacionC
+					END
+
+					CLOSE cursorComidasCliente
+					DEALLOCATE cursorComidasCliente
+		END
+	IF (@idEntrenador IS NOT NULL)
+		BEGIN
+			DECLARE @ultimoRegistroEnt AS TINYINT = (SELECT idRegistroMedico FROM RegistroMedico WHERE idCita = @idUltimaCitaEntrenador)
+			DECLARE @nombrePlanEnt AS VARCHAR(20) = (SELECT nombre FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+			DECLARE @indicacionesGeneralesEnt AS NVARCHAR(300) = (SELECT indicacionesGenerales FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+			DECLARE @cantidadComidasEnt AS TINYINT = (SELECT cantidadComidasDia FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+			DECLARE @alergiasConsideradasEnt AS NVARCHAR(100) = (SELECT alergiasConsideradas FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+			DECLARE @fechaInicioEnt AS DATE = (SELECT fechaInicio FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+			DECLARE @fechaFinEnt AS DATE = (SELECT fechaFin FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+
+			PRINT('************************Informacion plan nutricional actual del entrenador************************')
+			PRINT('Nombre del plan: ' + @nombrePlanEnt)
+			PRINT('Indicaciones generales: ' + @indicacionesGeneralesEnt)
+			PRINT('Cant. de Comidas al dia: ' + CONVERT(NVARCHAR(10), @cantidadComidasEnt, 120))
+			PRINT('Alegias Consideradas: ' + @alergiasConsideradasEnt)
+			PRINT('Fecha de inicio plan: ' + CONVERT(NVARCHAR(10), @fechaInicioEnt, 120))
+			PRINT('Fecha de fin del plan: ' + CONVERT(NVARCHAR(10), @fechaFinEnt, 120))
+
+			PRINT('**************************Menu que consta el plan nutricional del entrendaor************************')
+
+			/*DECLARAR VARIBLES QUE SE VAN A USAR EN EL CURSOR*/
+			DECLARE @nombreE varchar(20), @horarioMenuE varchar(10), @informacionAdicionalE NVARCHAR (300), @cantidadTotalCaloriasE DECIMAL (6,1)
+			
+			/*SE DECLARA Y SE USA EL CURSOR*/
+			DECLARE cursorPlanNutricionalEntrenador CURSOR FOR SELECT nombre, horarioMenu ,informacionAdicional, cantidadTotalCalorias 
+				FROM Menu WHERE idPlanNutricional = (SELECT idPlanNutricional FROM PlanNutricional WHERE idRegistroMedico = @ultimoRegistroEnt)
+
+			OPEN cursorPlanNutricionalEntrenador
+
+			FETCH NEXT FROM cursorPlanNutricionalEntrenador INTO @nombreE, @horarioMenuE, @informacionAdicionalE, @cantidadTotalCaloriasE
+
+			WHILE @@FETCH_STATUS = 0
+			BEGIN
+				PRINT('		************************Nombre del menu: ' + @nombreE + '************************')
+				PRINT('		Horario Menu: ' + @horarioMenuE)
+				PRINT('		Informacion Adicional: ' + @informacionAdicionalE)
+				PRINT('		Cantidad de calorias totales: ' + CONVERT(NVARCHAR(10), @cantidadTotalCaloriasE, 120))
+				PRINT('')
+				PRINT('')
+				FETCH NEXT FROM cursorPlanNutricionalEntrenador INTO @nombreE, @horarioMenuE, @informacionAdicionalE, @cantidadTotalCaloriasE
+			END
+
+			CLOSE cursorPlanNutricionalEntrenador
+			DEALLOCATE cursorPlanNutricionalEntrenador
+		END
+GO
+
+
+
+
+
+
+
+
+
+/*
+
+sp_addlogin 'academico','c@ntya1e;a','master'
+    sp_adduser 'academico', 'academico'
+
+grant select, insert on Material to academico
+grant select, insert on Ejemplar to academico
+grant select, insert on Prestamo to academico
+grant select, insert on Reserva to academico
+*/
+
+
+/***********************************
+-- Encriptación de la base de datos
+***********************************
+*/
+
+ 
+/*
+--Permisos de usuario/admin DB
+GRANT ALTER ON DATABASE::ProyectoBD2Prog1 TO usuario
+
+--Crear master key
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = '<password>';
+CREATE CERTIFICATE MyCertificate
+WITH SUBJECT = 'Certificate for encryption';
+SELECT name, thumbprint, subject FROM sys.certificates WHERE name = 'MyCertificate'
+ 
+--Permisos de usuario/admin cerificado
+GRANT CONTROL ON CERTIFICATE::MyCertificate TO usuario
+
+
+--Crear database encrytion key
+USE ProyectoBD2Prog1;
+CREATE DATABASE ENCRYPTION KEY
+WITH ALGORITHM = AES_256
+ENCRYPTION BY SERVER CERTIFICATE MyCertificate;
+
+
+--Guardar el certificado 
+USE master;
+BACKUP CERTIFICATE MyCertificate
+TO FILE = 'C:\DB2prog1\RepoDB2prog1\MyCertificate.cer'
+WITH PRIVATE KEY (
+     FILE = 'C:\DB2prog1\RepoDB2prog1\MyCertificate.pvk',
+     ENCRYPTION BY PASSWORD = 'password'
+);
+
+
+--Activar la base con encriptacion
+ALTER DATABASE ProyectoBD2Prog1
+SET ENCRYPTION ON;*/
 
 
 
