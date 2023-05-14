@@ -87,7 +87,6 @@ EXEC sp_addrolemember 'db_owner', 'Administrador';
 
 -- Cliente: Otorgar permisos de lectura y escritura
 EXEC sp_addrolemember 'db_datareader', 'Cliente';
-EXEC sp_addrolemember 'db_datawriter', 'Cliente';
 
 -- Entrenador: Otorgar permisos de lectura y escritura
 EXEC sp_addrolemember 'db_datareader', 'Entrenador';
@@ -95,6 +94,9 @@ EXEC sp_addrolemember 'db_datawriter', 'Entrenador';
 
 -- Personal Salud: Otorgar permisos de lectura
 EXEC sp_addrolemember 'db_datareader', 'PersonalSalud';
+EXEC sp_addrolemember 'db_datawriter', 'PersonalSalud';
+
+
 GO
 
 
@@ -2060,9 +2062,303 @@ GO
 
 
 
+/**************************************************************
+-- Realizar una copia de seguridad de la base de datos Gimnasio
+*************************************************************/
+BACKUP DATABASE Gimnasio TO DISK = 'C:\backups\Gimnasio.bak';
+
+
+/*******************************************************
+Enviar mail
+********************************************************/
+DELETE FROM msdb.dbo.sysmail_profile 
+
+-------esta config. se realiza una sola vez, ES PARA CONFIGURAR EL EMAIL--------
+--Paso 1,creacion de usuario, perfil de correo de base de datos
+EXECUTE msdb.dbo.sysmail_add_profile_sp 
+@profile_name = 'NotificacionGimnasio', 
+@description = 'Notificaciones del Gimnasio desde Gmail'
 
 
 
+--DBCC CHECKIDENT ([msdb.dbo.sysmail_profile] , RESEED, 0)
+--Para eliminar el perfil
+SELECT * FROM msdb.dbo.sysmail_profile 
+
+--Dar permisos para usar sysdb
+EXECUTE msdb.dbo.sysmail_add_principalprofile_sp
+@profile_name = 'NotificacionGimnasio',
+@principal_name = 'public',
+@is_default = 1 ;
+
+--Para verificar la existencia del perfil
+SELECT * FROM msdb.dbo.sysmail_profile 
+
+--Para eliminar las cuentas
+DELETE FROM msdb.dbo.sysmail_account
+
+
+--DBCC CHECKIDENT ([msdb.dbo.sysmail_account] , RESEED, 0)
+--Agregar correo de hotmail/outlook para que lo use sql server
+EXECUTE msdb.dbo.sysmail_add_account_sp
+@account_name = 'gimnasioDB',
+@description = 'Enviar Email de notificacion',
+@email_address = 'notificacionesgymdb@gmail.com',
+@display_name = 'Notificaciones Gimnasio DB',
+--*Estos datos estan en la configuracion SMTP de tu correo*--
+@mailserver_name = 'smtp.gmail.com',
+@port = 587,
+@enable_ssl = 1,
+@username='notificacionesgymdb@gmail.com',
+@password='ttsipfcbcfxutlpj'
+
+SELECT * FROM msdb.dbo.sysmail_account
+
+--Anadir cuenta de mail al perfil, vincular :D
+EXECUTE msdb.dbo.sysmail_add_profileaccount_sp
+@profile_name = 'NotificacionGimnasio',
+@account_name = 'gimnasioDB',
+@sequence_number = 1
+
+--Para verificar existencia con todos los datos
+--SELECT * FROM msdb.dbo.sysmail_profile p
+--JOIN msdb.dbo.sysmail_profileaccount pa ON p.profile_id = pa.profile_id
+--JOIN msdb.dbo.sysmail_account a ON pa.account_id = a.account_id
+--JOIN msdb.dbo.sysmail_server s ON a.account_id = s.account_id
+
+
+
+--SP que envia correo electronico al administrador
+-- Fecha de modificacion 04/1/2023
+--Enviar email al intentar actualizar compra 
+--***recordatorio de cita o proximo control***--- 
+
+GO
+
+
+IF EXISTS(SELECT name FROM sys.sysobjects WHERE name = 'send_email_Gimnasio_sp')
+	DROP PROCEDURE send_email_ClinicaDental_sp
+GO
+CREATE PROCEDURE send_email_Gimnasio_sp
+	@destinatario varchar(30),
+	@asunto varchar(50),
+	@cuerpo varchar(1000)
+AS
+	exec msdb.dbo.sp_send_dbmail 
+		@profile_name = 'NotificacionGimnasio', 
+		@recipients = @destinatario, 
+		@subject = @asunto, 
+		@body = @cuerpo, 
+		@body_format = 'text'
+GO
+-- PRUEBA de envio a correo --*******************************************************************
+EXEC send_email_Gimnasio_sp 'sebas3092@gmail.com', 'Prueba Sebas', 'Prueba agendamiento de cita '
+
+
+
+--Para verificar el estatus de envio
+msdb.dbo.sysmail_help_queue_sp @queue_type = 'Mail' ;
+--Para ver los mensajes de error (Si los hubiera)
+SELECT * FROM msdb.dbo.sysmail_event_log;
+
+
+
+
+-- ***************************************Correos****************************************************************************************
+
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'sp_enviar_correo_rutinas_cliente')
+BEGIN
+    DROP PROCEDURE sp_enviar_correo_rutinas_cliente
+END
+GO
+
+CREATE PROCEDURE sp_enviar_correo_rutinas_cliente
+    @numeroCedula cedulaIdentidad
+AS
+BEGIN
+    DECLARE @nombres NVARCHAR(100)
+    DECLARE @apellidos NVARCHAR(100)
+    DECLARE @correoElectronico correo
+    DECLARE @rutinas NVARCHAR(MAX)
+
+    -- Obtener los nombres, apellidos y correo electrónico del cliente
+    SELECT @nombres = nombres, @apellidos = apellidos, @correoElectronico = correoElectronico
+    FROM Cliente
+    WHERE numeroCedula = @numeroCedula
+
+    -- Obtener las rutinas asociadas al cliente
+    SELECT @rutinas = COALESCE(@rutinas + CHAR(13) + CHAR(10), '') + 'Nombre: ' + nombre + ', Descripción: ' + descripcionEjercicio
+    FROM Rutina r
+    INNER JOIN PlanEntrenamiento pe ON r.idPlanEntrenamiento = pe.idPlanEntrenamiento
+    INNER JOIN Cliente c ON pe.idCliente = c.idCliente
+    WHERE c.numeroCedula = @numeroCedula
+
+    -- Verificar que se encontró un cliente con la cédula especificada
+    IF @nombres IS NULL OR @apellidos IS NULL OR @correoElectronico IS NULL
+    BEGIN
+        RAISERROR('No se encontró un cliente con la cédula especificada', 16, 1)
+        RETURN
+    END
+
+    -- Enviar el correo electrónico
+    DECLARE @asunto NVARCHAR(100) = 'Rutinas del cliente ' + @nombres + ' ' + @apellidos
+    DECLARE @cuerpo NVARCHAR(MAX) = 'Estimado(a) ' + @nombres + ' ' + @apellidos + ',' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) + 'A continuación se muestran las rutinas asociadas a su plan de entrenamiento:' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) + @rutinas
+    EXEC msdb.dbo.sp_send_dbmail
+        @profile_name = 'NotificacionGimnasio', -- Nombre del perfil de correo electrónico configurado en el servidor
+        @recipients = @correoElectronico,
+        @subject = @asunto,
+        @body = @cuerpo
+
+    -- Mostrar un mensaje de éxito
+    PRINT 'Se ha enviado un correo electrónico con las rutinas del cliente ' + @nombres + ' ' + @apellidos + ' a la dirección ' + @correoElectronico
+END
+
+--Verificar si existe el Trigger
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'TR' AND name = 'tr_enviar_correo_incidente')
+BEGIN
+    DROP TRIGGER tr_enviar_correo_incidente
+END
+GO
+
+CREATE TRIGGER tr_enviar_correo_incidente
+ON ReporteIncidente
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @idCliente SMALLINT
+    DECLARE @idEntrenador TINYINT
+    DECLARE @idPersonalSalud TINYINT
+    DECLARE @descripcionIncidente NVARCHAR(200)
+    DECLARE @nombresCliente NVARCHAR(100)
+    DECLARE @apellidosCliente NVARCHAR(100)
+    DECLARE @nombresEntrenador NVARCHAR(100)
+    DECLARE @apellidosEntrenador NVARCHAR(100)
+    DECLARE @correoPersonalSalud correo
+
+    -- Obtener los datos del reporte de incidente médico insertado
+    SELECT @idCliente = i.idCliente, @idEntrenador = i.idEntrenador, @idPersonalSalud = i.idPersonalSalud, @descripcionIncidente = i.descripcionIncidente
+    FROM inserted i
+
+    -- Obtener los nombres y apellidos del cliente
+    SELECT @nombresCliente = nombres, @apellidosCliente = apellidos
+    FROM Cliente
+    WHERE idCliente = @idCliente
+
+    -- Obtener los nombres y apellidos del entrenador que reportó el incidente
+    SELECT @nombresEntrenador = nombres, @apellidosEntrenador = apellidos
+    FROM Entrenador
+    WHERE idEntrenador = @idEntrenador
+
+    -- Obtener el correo electrónico del personal de salud correspondiente
+    SELECT @correoPersonalSalud = correoElectronico
+    FROM PersonalSalud
+    WHERE idPersonalSalud = @idPersonalSalud
+
+    -- Verificar que se encontraron los datos necesarios
+    IF @nombresCliente IS NULL OR @apellidosCliente IS NULL OR @nombresEntrenador IS NULL OR @apellidosEntrenador IS NULL OR @correoPersonalSalud IS NULL
+    BEGIN
+        RAISERROR('No se encontraron los datos necesarios para enviar el correo electrónico', 16, 1)
+        RETURN
+    END
+
+    -- Enviar el correo electrónico
+    DECLARE @asunto NVARCHAR(100) = 'Reporte de incidente médico'
+    DECLARE @cuerpo NVARCHAR(MAX) = 'Se ha reportado un incidente médico con el siguiente detalle:' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) + 'Cliente: ' + @nombresCliente + ' ' + @apellidosCliente + CHAR(13) + CHAR(10) + 'Entrenador: ' + @nombresEntrenador + ' ' + @apellidosEntrenador + CHAR(13) + CHAR(10) + 'Descripción: ' + @descripcionIncidente
+    EXEC msdb.dbo.sp_send_dbmail
+        @profile_name = 'NotificacionGimnasio', -- Nombre del perfil de correo electrónico configurado en el servidor
+        @recipients = @correoPersonalSalud,
+        @subject = @asunto,
+        @body = @cuerpo
+
+    -- Mostrar un mensaje de éxito
+    PRINT 'Se ha enviado un correo electrónico al personal de salud correspondiente'
+END
+
+
+
+/****************************************************************
+MENU
+******************************************************************/
+IF EXISTS(SELECT name FROM sys.objects WHERE type = 'P' AND name = 'menuSP')
+BEGIN
+    DROP PROCEDURE menuSP
+END
+GO
+
+CREATE PROCEDURE menuSP (@opcion CHAR(10))
+AS
+BEGIN
+    BEGIN TRY
+        IF @opcion = 'OPCIONES'
+            PRINT '
+		1. Planes de nutrición
+		2. Planes de entrenamiento
+		3. Registro de avance de plan de entrenamiento
+
+		Notificación:
+		4. Rutina de entrenamiento del cliente
+		5. Notiifcación de incidentes a médicos
+
+		Informes/Consultas:
+		6. Informe de progreso del cliente
+		7. RUtina de cliente
+		8. Plan nutricional por cliente'
+        
+        IF @opcion = '1'
+        BEGIN
+
+			EXEC sp_insertar_plan_nutricional '1104491862', 'Plan peso a', 3, 'Coma mucho', null, '2023-08-01', '2023-09-03'
+			Select * from PlanNutricional
+
+        END
+
+        IF @opcion = '2'
+		BEGIN
+			EXEC ingresoPlanEntrenamiento 'Plan peso a', 'Alta', 'Perder peso', '2023-08-13', '2023-09-20', 'Semanal', 1, '1104491862', '1000123456'
+        END
+
+        IF @opcion = '3'
+        BEGIN
+			EXEC registrarAsistencia 1104491862
+			EXEC asistenciaCliente 1104491862
+        END
+
+        IF @opcion = '4'
+        BEGIN
+           EXEC sp_enviar_correo_rutinas_cliente '172439991'
+        END
+
+        IF @opcion = '5'
+        BEGIN
+            EXEC ingresoReporteIncidente 'Un cliente resbala en una máquina de cardio y cae al suelo', '1000123456', '1104567908', '1724399991'
+        END
+
+        IF @opcion = '6'
+        BEGIN
+            EXEC informeProgresoCliente 1104491862
+        END
+
+        IF @opcion = '7'
+        BEGIN
+            EXEC rutinaCliente 1104491862
+        END
+
+        IF @opcion = '8'
+        BEGIN
+            EXEC informePlanNutricionalActual 1104491862
+        END
+    END TRY
+    BEGIN CATCH
+        --PRINT (ERROR_MESSAGE());
+        --SELECT ERROR_NUMBER() error, ERROR_LINE() mensaje, ERROR_SEVERITY() severidad, ERROR_LINE() linea;
+    END CATCH
+END
+GO
+
+
+EXEC  menuSP '1'
+EXEC  menuSP '3'
+EXEC  menuSP '6'
 
 /*
 

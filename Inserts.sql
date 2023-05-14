@@ -130,11 +130,11 @@ VALUES ('Gabriel', 'Rojas', '1104567904', '1983-11-10', 'gabrielrojas@gmail.com'
 INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
 VALUES ('Isabella', 'Santos', '1104567905', '1997-06-05', 'isabellasantos@gmail.com', '0987114321', 'Av. 6 de Diciembre y Av. Naciones Unidas', 2, 'Nutricionista', 'Nutrición Deportiva', 1, 1, 'Medio Tiempo');
 INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
-VALUES ('Miguel', 'Torres', '1104567906', '1986-01-30', 'migueltorres@gmail.com', '0991165132', 'Calle Rocafuerte y Av. 9 de Octubre', 6, 'Doctor', 'Traumatología', 1, 0, 'Tiempo Completo');
+VALUES ('Miguel', 'Torres', '1104567906', '1986-01-30', 'sebastian.andrade.guanoquiza@udla.edu.ec', '0991165132', 'Calle Rocafuerte y Av. 9 de Octubre', 6, 'Doctor', 'Traumatología', 1, 0, 'Tiempo Completo');
 INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
-VALUES ('Valeria', 'Vargas', '1104567907', '1994-04-25', 'valeriavargas@gmail.com', '0911143210', 'Av. 12 de Octubre y Av. Patria', 3, 'Nutricionista', 'Nutrición Clínica', 1, 1, 'Medio Tiempo');
+VALUES ('Valeria', 'Vargas', '1104567907', '1994-04-25', 'jose.merlo.santacruz@udla.edu.ec', '0911143210', 'Av. 12 de Octubre y Av. Patria', 3, 'Nutricionista', 'Nutrición Clínica', 1, 1, 'Medio Tiempo');
 INSERT INTO PersonalSalud (nombres, apellidos, numeroCedula, fechaNacimiento, correoElectronico, numeroCelular, direccionDomicilio, aniosExperiencia, tipo, especialidad, activo, finesSemana, tipoContrato) 
-VALUES ('Javier', 'Zambrano', '1104567908', '1982-09-22', 'javierzambrano@gmail.com', '0911154321', 'Calle Sucre y Av. 9 de Octubre', 13, 'Doctor', 'Cardiología', 1, 0, 'Tiempo Completo');
+VALUES ('Javier', 'Zambrano', '1104567908', '1982-09-22', 'david.trujillo.robalino@udla.edu.ec', '0911154321', 'Calle Sucre y Av. 9 de Octubre', 13, 'Doctor', 'Cardiología', 1, 0, 'Tiempo Completo');
 
 
 
